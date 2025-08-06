@@ -1,0 +1,15 @@
+# tweets/show.html.erb
+<h2>これまでの投稿一覧</h2>
+<% @tweets.each do |t| %>
+  <div>
+    <p><strong>内容:</strong> <%= t.diary %></p>
+    <p><strong>投稿時間:</strong> <%= t.time.strftime('%Y-%m-%d %H:%M') if t.time %></p>
+    <% if @tweet.image.attached? %>
+     <%= image_tag @tweet.image.variant(resize_to_limit: [500, 500]) %>
+    <% end %>
+
+    <hr>
+  </div>
+  
+</div>
+<% end %>

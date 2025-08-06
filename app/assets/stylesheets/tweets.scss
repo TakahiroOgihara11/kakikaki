@@ -1,0 +1,104 @@
+/* 全体の背景とフォームの外枠 */
+.diary-form-wrapper {
+  background: url('diary3_bg.png') no-repeat center center;
+  background-size: cover;
+  width: 800px;
+  height: auto;
+  padding: 40px 60px;
+  margin: 30px auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  font-family: "Georgia", serif;
+}
+
+/* フォーム本体 */
+.diary-form {
+  background-color: rgba(255, 255, 255, 0);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* 入力グループ共通（枠つき・背景色） */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid #ccc;
+}
+
+/* ラベルのスタイル */
+/* ラベル文字だけ囲む */
+.form-label {
+  display: inline-block;      /* 幅を文字に合わせる */
+  background-color: rgba(255, 255, 255, 0.7); /* 文字周りの背景色 */
+  padding: 4px 10px;         /* 文字の上下左右に余白 */
+  border-radius: 6px;        /* 角丸 */
+  font-weight: bold;
+  color: #2e2e2e;
+  margin-bottom: 6px;
+}
+
+
+/* 入力欄の共通スタイル（※一部で上書きあり） */
+.form-input {
+  border: 1px solid #d1bfa7;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 16px;
+  color: #3a2e1d;
+  font-family: "Georgia", serif;
+  width: 60%;
+  background: rgba(255, 255, 255, 0.5); /* ← デフォルトは薄い白 */
+}
+
+/* タイトル入力専用 */
+.title-input {
+  width: 70%;
+}
+
+/* 日記テキストエリア専用（背景は透明にする） */
+.diary-input {
+  width: 80%;
+  margin-left: auto; /* 右寄せ */
+  background: transparent;
+  border: 1px solid #d1bfa7;
+}
+
+/* 時刻選択専用（より小さめに） */
+.time-select {
+  width: 40%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* 送信ボタン */
+.submit-button {
+  align-self: flex-end;
+  margin-top: 10px;
+  padding: 10px 25px;
+  background-color: #401201;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #5b1f0f;
+}
+
+/* 戻るリンク */
+.back-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.back-button {
+  color: #401201;
+  text-decoration: underline;
+  font-weight: bold;
+}

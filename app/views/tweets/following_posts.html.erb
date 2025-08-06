@@ -1,0 +1,64 @@
+<h1>フォロー中の人の今日の投稿</h1>
+<p>今日の日付: <%= Date.today.strftime('%Y年%m月%d日') %></p>
+
+<% if @tweets.any? %>
+  <% @tweets.each do |tweet| %>
+    <div class="card">
+      <h3>タイトル: <%= tweet.name %></h3>
+      <p><strong>投稿者:</strong> <%= tweet.user.name %></p>
+      <p><%= tweet.diary %></p>
+      <small><%= tweet.created_at.strftime('%H:%M') %></small>
+
+      <% if tweet.image.attached? %>
+        <%= image_tag tweet.image, size: "300x200", class: "clickable-image", data: { full_image_url: url_for(tweet.image) } %>
+      <% end %>
+
+      <!-- コメント一覧 -->
+      <div class="comments">
+        <p><strong>コメント一覧:</strong></p>
+        <% tweet.comments.each do |comment| %>
+          <div class="comment">
+            <strong><%= comment.user.name %>:</strong>
+            <%= comment.content %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- コメントフォーム -->
+      <% if user_signed_in? %>
+        <%= form_with(model: [tweet, @comment], local: true) do |f| %>
+          <%= f.text_area :content, placeholder: "コメントを書く" %>
+          <%= f.submit "コメントする" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- モーダル部分（1つだけあればOK） -->
+  <div id="image-modal" class="modal">
+    <img id="modal-image" src="">
+  </div>
+
+  <!-- JS：クリックで拡大 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const modal = document.getElementById("image-modal");
+      const modalImg = document.getElementById("modal-image");
+
+      document.querySelectorAll(".clickable-image").forEach(img => {
+        img.addEventListener("click", () => {
+          modalImg.src = img.dataset.fullImageUrl;
+          modal.classList.add("open");
+        });
+      });
+
+      modal.addEventListener("click", () => {
+        modal.classList.remove("open");
+        modalImg.src = "";
+      });
+    });
+  </script>
+
+<% else %>
+  <p>今日の投稿はまだありません。</p>
+<% end %>

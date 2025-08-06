@@ -1,0 +1,64 @@
+<h2><%= resource_name.to_s.humanize %>の編集</h2>
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true }) do |f| %>
+  <%= render "users/shared/error_messages", resource: resource %>
+
+  <!-- 名前入力 -->
+  <div class="field">
+    <%= f.label :name, "名前" %><br />
+    <%= f.text_field :name, autofocus: true, autocomplete: "name" %>
+  </div>
+
+  <!-- プロフィール入力 -->
+  <div class="field">
+    <%= f.label :profile, "プロフィール" %><br />
+    <%= f.text_area :profile, autofocus: true %>
+  </div>
+
+  <!-- メールアドレス -->
+  <div class="field">
+    <%= f.label :email, "メールアドレス" %><br />
+    <%= f.email_field :email, autofocus: true, autocomplete: "Email" %>
+  </div>
+  
+  <!-- プロフィール画像 -->
+  <div class="field">
+    <%= f.label :profile_image, "プロフィール画像" %><br>
+    <%= f.file_field :profile_image %>
+  </div>
+
+  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+    <div>現在確認待ちのメールアドレス: <%= resource.unconfirmed_email %></div>
+  <% end %>
+
+  <!-- パスワード変更（任意） -->
+  <div class="field">
+    <%= f.label :password, "新しいパスワード" %> <i>（変更しない場合は空欄のままでOK）</i><br />
+    <%= f.password_field :password, autocomplete: "new-password" %>
+    <% if @minimum_password_length %>
+      <br />
+      <em>※最低<%= @minimum_password_length %>文字</em>
+    <% end %>
+  </div>
+
+  <!-- パスワード確認 -->
+  <div class="field">
+    <%= f.label :password_confirmation, "パスワード（確認用）" %><br />
+    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+  </div>
+
+  <!-- 現在のパスワード -->
+  <div class="field">
+    <%= f.label :current_password, "現在のパスワード" %> <i>（変更を保存するには入力が必要です）</i><br />
+    <%= f.password_field :current_password, autocomplete: "current-password" %>
+  </div>
+
+  <!-- 更新ボタン -->
+  <div class="actions">
+    <%= f.submit "更新する" %>
+  </div>
+<% end %>
+
+
+
+<%= link_to "戻る", :back %>

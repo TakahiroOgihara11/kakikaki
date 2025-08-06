@@ -1,0 +1,30 @@
+<h1>ユーザー一覧</h1>
+<!-- ユーザー検索フォーム -->
+<%= form_tag(users_path, method: :get) do %>
+  <%= text_field_tag :search, params[:search], placeholder: "ユーザー名で検索" %>
+  <%= submit_tag '検索する' %>
+<% end %>
+
+<% @users.each do |user| %>
+  <div class="user-card" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+    <p><strong><%= user.name %></strong></p>
+    <p><%= user.profile %></p>
+
+<% unless current_user == user %>
+  <% if current_user.following?(user) %>
+    <%= form_for(current_user.relationships.find_by(follow_id: user.id), html: { method: :delete }) do |f| %>
+      <%= hidden_field_tag :follow_id, user.id %>
+      <%= f.submit 'フォロー解除', class: 'btn btn-danger btn-block' %>
+    <% end %>
+  <% else %>
+    <%= form_for(current_user.relationships.build) do |f| %>
+      <%= hidden_field_tag :follow_id, user.id %>
+      <%= f.submit 'フォロー', class: 'btn btn-primary btn-block' %>
+    <% end %>
+  <% end %>
+<% end %>
+
+
+    <%= link_to 'プロフィールを見る', user_path(user) %>
+  </div>
+<% end %>

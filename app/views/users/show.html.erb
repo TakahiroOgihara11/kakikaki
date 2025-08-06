@@ -1,0 +1,110 @@
+<h1><%= @user == current_user ? "マイページ" : "#{@user.name}さんのプロフィール" %></h1>
+
+<% if @user.profile_image.attached? %>
+  <%= image_tag @user.profile_image, size: '250x200' %>
+<% else %>
+  <%= image_tag "default_icon.png", width: 150, height: 150, class: "rounded" %>
+<% end %>
+
+<% if current_user == @user %>
+  <!-- 自分の場合だけ表示 -->
+  <p>名前 : <%= @user.name %></p>
+  <p>メールアドレス : <%= @user.email %></p>
+  <p>プロフィール : <%= @user.profile %></p>
+
+  <%= link_to "編集する", edit_user_registration_path %>
+  <%= link_to "日記を投稿する", new_tweet_path %>
+
+  <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
+    <%= link_to "フォロー中の人の投稿を見る", following_posts_tweets_path, class: "btn-active" %>
+  <% else %>
+    <%= link_to "フォロー中の人の投稿を見る（本日未投稿）", "#", class: "btn-disabled", disabled: true %>
+  <% end %>
+
+  <%= link_to "ユーザー一覧", users_path %>
+
+  <h2>あなたの投稿一覧</h2>
+  <% @user.tweets.order(created_at: :desc).each do |t| %>
+    <p><strong>タイトル：</strong><%= t.name %></p>
+    <p><strong>内容：</strong><%= t.diary %></p>
+    <p><strong>日時：</strong><%= t.time.strftime('%Y-%m-%d %H:%M') if t.time %></p>
+
+    <% if t.image.attached? %>
+      <%= image_tag t.image, size: "300x200", class: "clickable-image", data: { full_image_url: url_for(t.image) } %>
+    <% end %>
+    <hr>
+  <% end %>
+
+<% else %>
+  <!-- 他人のプロフィールページ -->
+  <p>名前 : <%= @user.name %></p>
+  <p>プロフィール : <%= @user.profile %></p>
+
+  <!-- フォローボタン -->
+  <div class="follow-button">
+    <% if current_user.following?(@user) %>
+      <%= form_for(current_user.relationships.find_by(follow_id: @user.id), html: { method: :delete }) do |f| %>
+        <%= hidden_field_tag :follow_id, @user.id %>
+        <%= f.submit 'フォロー解除', class: 'btn btn-danger' %>
+      <% end %>
+    <% else %>
+      <%= form_for(current_user.relationships.build) do |f| %>
+        <%= hidden_field_tag :follow_id, @user.id %>
+        <%= f.submit 'フォロー', class: 'btn btn-primary' %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- 直近3件の投稿 -->
+  <h3>直近の投稿</h3>
+  <% @recent_tweets.each do |tweet| %>
+    <div class="card">
+      <h4>タイトル: <%= tweet.name %></h4>
+      <p><%= tweet.diary %></p>
+      <small><%= tweet.created_at.strftime('%Y-%m-%d %H:%M') %></small>
+
+      <!-- 画像がある場合 -->
+      <% if tweet.image.attached? %>
+        <%= image_tag tweet.image, size: "300x200", class: "clickable-image", data: { full_image_url: url_for(tweet.image) } %>
+      <% end %>
+
+      <!-- いいね数 -->
+      <p>❤️ <%= tweet.likes.count %>件のいいね</p>
+
+      <!-- コメント一覧 -->
+      <div class="comments">
+        <p><strong>コメント一覧:</strong></p>
+        <% tweet.comments.each do |comment| %>
+          <div class="comment">
+            <strong><%= comment.user.name %>:</strong> <%= comment.content %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- モーダル（画像拡大） -->
+  <div id="image-modal" class="modal">
+    <img id="modal-image" src="">
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const modal = document.getElementById("image-modal");
+      const modalImg = document.getElementById("modal-image");
+
+      document.querySelectorAll(".clickable-image").forEach(img => {
+        img.addEventListener("click", () => {
+          modalImg.src = img.dataset.fullImageUrl;
+          modal.classList.add("open");
+        });
+      });
+
+      modal.addEventListener("click", () => {
+        modal.classList.remove("open");
+        modalImg.src = "";
+      });
+    });
+  </script>
+<% end %>
+

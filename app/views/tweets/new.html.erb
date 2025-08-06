@@ -1,0 +1,38 @@
+# new.html.erb
+<h1 class="page-title">日記を投稿する</h1>
+
+<div class="diary-form-wrapper">
+  <%= form_with model: @tweet, local: true, html: { class: "diary-form" } do |form| %>
+
+    <div class="form-group title-group">
+      <%= form.label :name, "タイトル", class: "form-label" %><br>
+      <%= form.text_field :name, class: "form-input title-input" %>
+    </div>
+
+    <div class="form-group diary-group">
+      <%= form.label :diary, "日記の内容", class: "form-label" %><br>
+      <%= form.text_area :diary, rows: 10, class: "form-input diary-input" %>
+    </div>
+
+    <div class="form-group image-group">
+     <%= form.label :image, "画像をアップロード" %><br>
+     <%= form.file_field :image %>
+    </div>
+
+    <div class="form-group time-group">
+      <%= form.label :time, "投稿時間", class: "form-label" %><br>
+      <%= form.datetime_select :time, {}, { class: "form-input time-select" } %>
+    </div>
+
+    <div class="form-group submit-group">
+      <%= form.submit "投稿する", class: "submit-button" %>
+    </div>
+
+  <% end %>
+</div>
+
+<div class="back-link">
+  <%= link_to "戻る", user_path(current_user), class: "back-button" %>
+</div>
+
+
