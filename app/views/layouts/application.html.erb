@@ -33,26 +33,40 @@
 
 
 <body>
- <header>
-  <h1>かきか記</h1>
-  <div class="header-list">
-   <ul>
-    <% if user_signed_in? %>
-     <li><%= link_to 'マイページ', user_path(current_user) %></li>
-     <li><%= button_to 'ログアウト', destroy_user_session_path, method: :delete %></li>
-    <% else %>
-     <li><%= link_to "新規登録", new_user_registration_path %></li>
-      <!--サインアップ時に名前を入力できるようにフォームを追加-->
+  <header>
+    <h1 class="site-logo">
+     <%= link_to root_path do %>
+     <%= image_tag "logo.png", alt: "かきか記", class: "site-logo__img" %>
+     <% end %>
+    </h1>
+    <div class="header-list">
+      <ul>
+        <% if user_signed_in? %>
+          <li><%= link_to 'マイページ', user_path(current_user) %></li>
+          <li><%= link_to '日記を投稿する', new_tweet_path %></li>
 
-     <li><%= link_to "ログイン", new_user_session_path %></li>
-    <% end %>
-   </ul>
-  </div>
- </header>
- <main>
-  <%= yield %>
- </main>
+          <% if posted_today?(current_user) %>
+            <li><%= link_to 'フォローした人の日記を見る', following_posts_tweets_path %></li>
+          <% else %>
+            <li><span class="btn-disabled">フォローした人の日記を見る（本日未投稿）</span></li>
+          <% end %>
+
+          <li><%= link_to 'ユーザー一覧', users_path %></li>
+          <li><%= button_to 'ログアウト', destroy_user_session_path, method: :delete, form: { style: "display:inline;" }, class: "btn-ghost" %>
+           </li>
+        <% else %>
+          <li><%= link_to "新規登録", new_user_registration_path %></li>
+          <li><%= link_to "ログイン", new_user_session_path %></li>
+        <% end %>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <%= yield %>
+  </main>
 </body>
+
 
 
 </html>
