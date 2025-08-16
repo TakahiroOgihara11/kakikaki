@@ -1,38 +1,61 @@
-# new.html.erb
-<h1 class="page-title">日記を投稿する</h1>
+<section class="diary-new">
+  <div class="diary-hero-layer"></div>
 
-<div class="diary-form-wrapper">
-  <%= form_with model: @tweet, local: true, html: { class: "diary-form" } do |form| %>
+  <h1 class="page-title">日記を投稿する</h1>
 
-    <div class="form-group title-group">
-      <%= form.label :name, "タイトル", class: "form-label" %><br>
-      <%= form.text_field :name, class: "form-input title-input" %>
+  <div class="diary-card">
+    <header class="diary-card__head">
+      <div class="diary-card__title">
+        <strong>日記の作成</strong>
+        <span>今日の出来事、写真、ひとことでもOK</span>
+      </div>
+    </header>
+
+    <div class="diary-grid">
+      <!-- 左カラム：タイトル / 本文 -->
+      <div class="diary-col diary-col--left">
+        <%= form_with model: @tweet, local: true, html: { class: "diary-form" } do |form| %>
+          <div class="form-group title-group" data-reveal>
+            <%= form.label :name, "タイトル", class: "form-label" %>
+            <%= form.text_field :name, class: "form-input title-input", placeholder: "例）夕焼けがきれいだった" %>
+          </div>
+
+          <div class="form-group diary-group" data-reveal>
+            <%= form.label :diary, "日記の内容", class: "form-label" %>
+            <%= form.text_area :diary, rows: 12, class: "form-input diary-input", placeholder: "今日の出来事や気持ちを書いてみよう…" %>
+          </div>
+
+          <div class="form-group time-group" data-reveal>
+            <%= form.label :time, "投稿時間", class: "form-label" %>
+            <%= form.datetime_select :time, {}, { class: "form-input time-select" } %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- 右カラム：画像アップロード -->
+      <div class="diary-col diary-col--right">
+        <div class="form-group image-group" data-reveal>
+          <label class="form-label">画像をアップロード</label>
+          <div class="upload-drop">
+            <div class="upload-drop__hint">ドラッグ＆ドロップ / ファイルを選択</div>
+            <%= form_with model: @tweet, local: true do |form| %>
+              <%= form.file_field :image, class: "upload-input" %>
+            <% end %>
+          </div>
+          <div class="upload-previews">
+            <div class="upload-thumb"></div>
+            <div class="upload-thumb"></div>
+            <div class="upload-thumb"></div>
+          </div>
+        </div>
+
+        <div class="diary-actions" data-reveal>
+          <%= link_to "戻る", user_path(current_user), class: "btn-ghost" %>
+          <%= form_with model: @tweet, local: true do |form| %>
+            <%= form.submit "投稿する", class: "btn-primary" %>
+          <% end %>
+        </div>
+      </div>
     </div>
-
-    <div class="form-group diary-group">
-      <%= form.label :diary, "日記の内容", class: "form-label" %><br>
-      <%= form.text_area :diary, rows: 10, class: "form-input diary-input" %>
-    </div>
-
-    <div class="form-group image-group">
-     <%= form.label :image, "画像をアップロード" %><br>
-     <%= form.file_field :image %>
-    </div>
-
-    <div class="form-group time-group">
-      <%= form.label :time, "投稿時間", class: "form-label" %><br>
-      <%= form.datetime_select :time, {}, { class: "form-input time-select" } %>
-    </div>
-
-    <div class="form-group submit-group">
-      <%= form.submit "投稿する", class: "submit-button" %>
-    </div>
-
-  <% end %>
-</div>
-
-<div class="back-link">
-  <%= link_to "戻る", user_path(current_user), class: "back-button" %>
-</div>
-
-
+  </div>
+</section>

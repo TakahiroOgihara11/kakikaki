@@ -16,6 +16,17 @@
 /* application.scss */
 @import "tweets";
 
+
+html, body {
+  margin: 0;    /* 余白を0に */
+  padding: 0;   /* 余白を0に */
+ 
+  background: linear-gradient(45deg, #1d98e4, #03a2b4); /* グラデーション背景 */
+  font-family: 'Rounded Mplus 1c', sans-serif; /* 楽しげで親しみやすいフォント */
+  color: #2e1a10; /* 文字色 */
+}
+
+
 body {
   margin: 0;
   font-family: 'Helvetica Neue', sans-serif;

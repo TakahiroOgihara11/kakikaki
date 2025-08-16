@@ -10,6 +10,9 @@
 <div class="users-index__list">
   <% @users.each do |user| %>
     <div class="user-card">
+      <div class="user-card__image">
+        <%= image_tag(user.profile_image.attached? ? user.profile_image : "default_icon.png", class: "user-card__avatar") %>
+      </div>
       <div class="user-card__main">
         <p class="user-card__name"><strong><%= user.name %></strong></p>
         <p class="user-card__profile"><%= user.profile %></p>
@@ -18,8 +21,7 @@
       <% unless current_user == user %>
         <div class="user-card__actions">
           <% if current_user.following?(user) %>
-            <%= form_for(current_user.relationships.find_by(follow_id: user.id),
-                        html: { method: :delete, class: "follow-form follow-form--unfollow" }) do |f| %>
+            <%= form_for(current_user.relationships.find_by(follow_id: user.id), html: { method: :delete, class: "follow-form follow-form--unfollow" }) do |f| %>
               <%= hidden_field_tag :follow_id, user.id %>
               <%= f.submit 'フォロー解除', class: 'btn btn--danger btn--block' %>
             <% end %>

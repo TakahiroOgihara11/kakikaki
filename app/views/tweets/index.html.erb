@@ -11,40 +11,96 @@
 </head>
 <body>
 
- <section class=index>
-   <!-- メイン -->
-   <main>
-     <section class="hero-full">
-       <div class="hero-text">
-         <h2>SNSでつながってるのに、話せていない。</h2>
-         <p>かきか記は“つながり”を“会話”に変える、日記共有アプリです。</p>
+ <section class="index lp">
+   <!-- Hero / ファーストビュー -->
+   <section class="hero-full">
+     <div class="lp-hero-layer"></div>
+     <div class="hero-text">
+       <div class="lp-hero-card" data-reveal>
+         <h1 class="lp-ttl">SNSでつながってるのに、話せていない。</h1>
+         <p class="lp-lead">かきか記は “つながり” を “会話” に変える、日記共有アプリです。</p>
 
-         <section class="description">
-           <h3>どうして作ったの？</h3>
-           <p>
-             フォロー関係で会話している人は10〜30%。<br>
-             もっと自然な交流を促す場所をつくりたくて「かきか記」が誕生しました。
-           </p>
-         </section>
-
-         <section class="how-to">
-           <h3>かんたんな使い方</h3>
-           <ul>
-             <li>1日1回、日記を投稿</li>
-             <li>投稿すると、フォロー中の投稿が見られる</li>
-             <li>表示された投稿にコメントすると、全員の投稿が見られる</li>
-           </ul>
-         </section>
+         <div class="lp-cta">
+           <%= link_to "はじめてみる", new_user_registration_path, class: "lp-btn lp-btn--primary" %>
+         </div>
        </div>
-     </section>
-   </main>
-
-   <!-- フッター（必要なら追加） -->
-   <footer class="site-footer">
-     <div class="container">
-       <p>&copy; 2025 かきか記</p>
      </div>
-   </footer>
-  </section>
+
+     <button class="lp-scroll-cue" aria-label="次のセクションへ">
+       <span>scroll</span>
+       <svg viewBox="0 0 24 24" class="lp-cue-icon"><path d="M12 16l-6-6h12z"/></svg>
+     </button>
+   </section>
+
+   <!-- どうして作ったの？ -->
+   <section class="lp-why">
+     <div class="lp-container">
+       <div class="lp-card" data-reveal>
+         <h2 class="lp-h2">どうして作ったの？</h2>
+         <p>
+           フォロー関係で実際に会話している人は <strong>10〜30%</strong>。<br>
+           もっと自然な交流を促す場所をつくりたくて「かきか記」が誕生しました。
+         </p>
+       </div>
+
+       <div class="lp-points">
+         <div class="lp-point" data-reveal>
+           <div class="lp-point-badge">1</div>
+           <h3>日々の小さな出来事が話題に</h3>
+           <p>日記だから話題に困らない。きっかけが自然に生まれます。</p>
+         </div>
+         <div class="lp-point" data-reveal>
+           <div class="lp-point-badge">2</div>
+           <h3>負担にならない設計</h3>
+           <p>1日1回でOK。気楽に続けられるUI/UX。</p>
+         </div>
+         <div class="lp-point" data-reveal>
+           <div class="lp-point-badge">3</div>
+           <h3>会話が回りだす仕掛け</h3>
+           <p>コメントの往復で、交流が自然と深まっていきます。</p>
+         </div>
+       </div>
+     </div>
+   </section>
+
+   <!-- かんたんな使い方 -->
+   <section class="lp-how">
+     <div class="lp-container">
+       <div class="lp-card" data-reveal>
+         <h2 class="lp-h2">かんたんな使い方</h2>
+       </div>
+
+       <ol class="lp-steps">
+         <li class="lp-step" data-reveal>
+           <div class="lp-step-num">01</div>
+           <div class="lp-step-body">
+             <h3>1日1回、日記を投稿</h3>
+             <p>思ったこと・写真・メモでOK。完璧じゃなくていい。</p>
+           </div>
+         </li>
+         <li class="lp-step" data-reveal>
+           <div class="lp-step-num">02</div>
+           <div class="lp-step-body">
+             <h3>投稿すると、フォロー中の投稿が見られる</h3>
+             <p>お互いの近況が自然に入ってくる。</p>
+           </div>
+         </li>
+         <li class="lp-step" data-reveal>
+           <div class="lp-step-num">03</div>
+           <div class="lp-step-body">
+             <h3>コメントすると、全員の投稿が見られる</h3>
+             <p>会話が回りだし、コミュニティが生まれる。</p>
+           </div>
+         </li>
+       </ol>
+
+       <div class="lp-cta-bottom" data-reveal>
+         <%= link_to "今すぐはじめる", new_user_registration_path, class: "lp-btn lp-btn--primary" %>
+         
+       </div>
+     </div>
+   </section>
+ </section>
+
 </body>
 </html>

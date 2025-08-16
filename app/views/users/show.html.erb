@@ -1,152 +1,102 @@
-<div class="user-show">
-  <h1 class="user-show__title">
-    <%= @user == current_user ? "マイページ" : "#{@user.name}さんのプロフィール" %>
-  </h1>
 
-  <div class="user-show__header">
-    <div class="user-show__avatar">
-      <% if @user.profile_image.attached? %>
-        <%= image_tag @user.profile_image, size: '250x200', class: "user-show__avatar-img" %>
-      <% else %>
-        <%= image_tag "default_icon.png", width: 150, height: 150, class: "user-show__avatar-img user-show__avatar-img--default rounded" %>
-      <% end %>
-    </div>
 
-    <% if current_user == @user %>
-      <div class="user-show__meta">
-        <p class="user-show__name">名前 : <%= @user.name %></p>
-        <p class="user-show__email">メールアドレス : <%= @user.email %></p>
-        <p class="user-show__profile">プロフィール : <%= @user.profile %></p>
+<div class="user-show-page">
+  <div class="content">
 
-        <div class="user-show__actions">
-          <%= link_to "編集する", edit_user_registration_path, class: "btn btn--secondary" %>
-          <%= link_to "日記を投稿する", new_tweet_path, class: "btn btn--primary" %>
+   <section class="user-hero">
+     <div class="user-hero__top">
+       <h1 class="user-hero__heading">
+         <%= @user == current_user ? "マイページ" : "#{@user.name}さんのプロフィール" %>
+       </h1>
+       <% if current_user == @user %>  
+         <p class="user-hero__sub">
+           <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
+             今日は日記を書きました <%= image_tag "check_icon.svg", alt: "チェックマーク", class: "check-icon" %>
+           <% else %>
+             今日は日記を書きましたか？
+           <% end %>
+         </p>
+       <% end %>
+     </div>
 
-          <div class="user-show__following-link">
-            <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
-              <%= link_to "フォロー中の人の日記を見る", following_posts_tweets_path, class: "btn btn--active" %>
-            <% else %>
-              <%= link_to "フォロー中の人の日記を見る（本日未投稿）", "#", class: "btn btn--disabled", disabled: true %>
-            <% end %>
+     <% if current_user == @user %>  
+       <div class="user-hero__actions">
+         <%= link_to "日記を投稿する", new_tweet_path, class: "btn btn--primary" %>
+         <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
+           <%= link_to "フォロー中の人の日記を見る", following_posts_tweets_path, class: "btn btn--ghost" %>
+         <% else %>
+           <span class="btn btn--disabled">フォロー中の人の日記を見る（本日未投稿）</span>
+         <% end %>
+         <%= link_to "ユーザー一覧", users_path, class: "btn btn--ghost" %>
+         <%= link_to "編集する", edit_user_registration_path, class: "btn btn--ghost" %>
+       </div>
+     <% end %>
+   </section>
+
+
+    <section class="user-main">
+      <aside>
+        <div class="card">
+          <div class="profile-card__header">
+            <%= image_tag(@user.profile_image.attached? ? @user.profile_image : "default_icon.png",
+                          class: "profile-card__avatar") %>
+            <div>
+              <h2 class="profile-card__name"><%= @user.name %></h2>
+              <% if current_user == @user %>
+                <p class="profile-card__email"><%= @user.email %></p>
+              <% end %>
+            </div>
           </div>
-
-          <%= link_to "ユーザー一覧", users_path, class: "btn btn--ghost" %>
+          <p class="profile-card__bio"><%= @user.profile %></p>
         </div>
-      </div>
-    <% else %>
-      <div class="user-show__meta">
-        <p class="user-show__name">名前 : <%= @user.name %></p>
-        <p class="user-show__profile">プロフィール : <%= @user.profile %></p>
 
-        <div class="user-show__follow">
-          <% if current_user.following?(@user) %>
-            <%= form_for(current_user.relationships.find_by(follow_id: @user.id),
-                        html: { method: :delete, class: "follow-form follow-form--unfollow" }) do |f| %>
-              <%= hidden_field_tag :follow_id, @user.id %>
-              <%= f.submit 'フォロー解除', class: 'btn btn--danger' %>
-            <% end %>
-          <% else %>
-            <%= form_for(current_user.relationships.build, html: { class: "follow-form follow-form--follow" }) do |f| %>
-              <%= hidden_field_tag :follow_id, @user.id %>
-              <%= f.submit 'フォロー', class: 'btn btn--primary' %>
-            <% end %>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-  <% if current_user == @user %>
-    <!-- 自分の投稿一覧 -->
-    <section class="user-show__posts">
-      <h2 class="user-show__posts-title">あなたの投稿一覧</h2>
-
-      <div class="post-list">
-        <% @user.tweets.order(created_at: :desc).each do |t| %>
-          <article class="post-card">
-            <header class="post-card__header">
-              <p class="post-card__title"><strong>タイトル：</strong><%= t.name %></p>
-              <time class="post-card__time"><strong>日時：</strong><%= t.time.strftime('%Y-%m-%d %H:%M') if t.time %></time>
-            </header>
-
-            <div class="post-card__body">
-              <p class="post-card__text"><strong>内容：</strong><%= t.diary %></p>
-
-              <% if t.image.attached? %>
-                <%= image_tag t.image,
-                              size: "300x200",
-                              class: "post-card__image clickable-image",
-                              data: { full_image_url: url_for(t.image) } %>
+        <% unless current_user == @user %>
+          <div class="card" style="margin-top:12px">
+            <h3 class="section-title">初めての日記</h3>
+            <div class="recent-list">
+              <% @user.tweets.order(created_at: :asc).limit(1).each do |tweet| %>
+                <article class="recent-item">
+                  <h4 class="recent-item__title"><%= tweet.name %></h4>
+                  <p class="recent-item__meta"><%= tweet.created_at.strftime('%Y-%m-%d %H:%M') %></p>
+                  <% if tweet.image.attached? %>
+                    <%= image_tag tweet.image, class: "recent-item__img clickable-image", data: { full_image_url: url_for(tweet.image) } %>
+                  <% end %>
+                  <p>💗 <%= tweet.likes.count %>件のいいね</p>
+                </article>
               <% end %>
             </div>
-          </article>
+          </div>
         <% end %>
-      </div>
-    </section>
-  <% else %>
-    <!-- 他人の直近3件 -->
-    <section class="user-show__recent">
-      <h3 class="user-show__recent-title">直近の投稿</h3>
+      </aside>
 
-      <div class="post-list post-list--compact">
-        <% @recent_tweets.each do |tweet| %>
-          <article class="post-card post-card--compact">
-            <header class="post-card__header">
-              <h4 class="post-card__title">タイトル: <%= tweet.name %></h4>
-              <time class="post-card__time"><%= tweet.created_at.strftime('%Y-%m-%d %H:%M') %></time>
-            </header>
-
-            <div class="post-card__body">
-              <p class="post-card__text"><%= tweet.diary %></p>
-
-              <% if tweet.image.attached? %>
-                <%= image_tag tweet.image,
-                              size: "300x200",
-                              class: "post-card__image clickable-image",
-                              data: { full_image_url: url_for(tweet.image) } %>
-              <% end %>
-
-              <div class="post-card__meta">
-                <span class="post-card__likes">❤️ <%= tweet.likes.count %>件のいいね</span>
+        <% if current_user == @user %>
+            <section>
+             <h3 class="section-title">あなたの投稿一覧</h3>
+              <div class="timeline">
+               <% @user.tweets.order(created_at: :desc).each do |t| %>
+                  <article class="post">
+                   <h4 class="post__title"><%= t.name %></h4>
+                    <p class="post__meta"><%= t.time.strftime('%Y-%m-%d %H:%M') if t.time %></p>
+                   <p><%= t.diary %></p>
+                   <% if t.image.attached? %>
+                      <%= image_tag t.image, class: "post__img clickable-image", data: { full_image_url: url_for(t.image) } %>
+                    <% end %>
+                    <p>💗 <%= t.likes.count %>件のいいね</p>
+                  </article>
+               <% end %>
               </div>
-
-              <div class="post-card__comments">
-                <p class="post-card__comments-title"><strong>コメント一覧:</strong></p>
-                <% tweet.comments.each do |comment| %>
-                  <div class="comment">
-                    <span class="comment__author"><strong><%= comment.user.name %>:</strong></span>
-                    <span class="comment__content"><%= comment.content %></span>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-          </article>
+           </section>
         <% end %>
-      </div>
-    </section>
-  <% end %>
 
-  <!-- 画像モーダル（ページに1つだけ） -->
-  <div id="image-modal" class="modal">
-    <img id="modal-image" src="">
+      </section>
+    </section>
+
+    <!-- 既存のモーダルはそのまま使う -->
+    <div id="image-modal" class="modal"><img id="modal-image" src=""></div>
+
   </div>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const modal = document.getElementById("image-modal");
-    const modalImg = document.getElementById("modal-image");
 
-    document.querySelectorAll(".clickable-image").forEach(img => {
-      img.addEventListener("click", () => {
-        modalImg.src = img.dataset.fullImageUrl;
-        modal.classList.add("open");
-      });
-    });
 
-    modal.addEventListener("click", () => {
-      modal.classList.remove("open");
-      modalImg.src = "";
-    });
-  });
-</script>
+

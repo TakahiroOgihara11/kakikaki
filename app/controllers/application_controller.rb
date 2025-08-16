@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
     def after_sign_in_path_for(resource)
-    user_path(resource)  # 例: /users/3
+     user_path(resource)  # 例: /users/3
     end
       # deviseコントローラーにストロングパラメータを追加する          
   before_action :configure_permitted_parameters, if: :devise_controller?

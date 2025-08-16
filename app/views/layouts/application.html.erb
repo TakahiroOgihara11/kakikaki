@@ -52,7 +52,7 @@
           <% end %>
 
           <li><%= link_to 'ユーザー一覧', users_path %></li>
-          <li><%= button_to 'ログアウト', destroy_user_session_path, method: :delete, form: { style: "display:inline;" }, class: "btn-ghost" %>
+          <li><%= button_to 'ログアウト', destroy_user_session_path, method: :delete, form: { style: "display:inline;" },  class: "btn-ghost" %>
            </li>
         <% else %>
           <li><%= link_to "新規登録", new_user_registration_path %></li>
