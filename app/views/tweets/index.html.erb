@@ -8,6 +8,8 @@
   <style>
     /* 必要なら軽いスタイルを書く */
   </style>
+  <%= javascript_importmap_tags %>
+
 </head>
 <body>
 
@@ -17,8 +19,9 @@
      <div class="lp-hero-layer"></div>
      <div class="hero-text">
        <div class="lp-hero-card" data-reveal>
-         <h1 class="lp-ttl">SNSでつながってるのに、話せていない。</h1>
-         <p class="lp-lead">かきか記は “つながり” を “会話” に変える、日記共有アプリです。</p>
+         <h1 class="lp-ttl">SNSでつながってるのに</h1>
+         <h1 class="lp-ttl">話せていない</h1>
+         <p class="lp-lead">かきか記はそんな “つながり” を “<span style="font-family: 'Noto Sans JP', sans-serif;">交流</span>” に変える、日記共有アプリです。</p>
 
          <div class="lp-cta">
            <%= link_to "はじめてみる", new_user_registration_path, class: "lp-btn lp-btn--primary" %>
@@ -32,11 +35,11 @@
      </button>
    </section>
 
-   <!-- どうして作ったの？ -->
+   <!-- 知っていますか？ -->
    <section class="lp-why">
      <div class="lp-container">
        <div class="lp-card" data-reveal>
-         <h2 class="lp-h2">どうして作ったの？</h2>
+         <h2 class="lp-h2">知っていますか？</h2>
          <p>
            フォロー関係で実際に会話している人は <strong>10〜30%</strong>。<br>
            もっと自然な交流を促す場所をつくりたくて「かきか記」が誕生しました。
@@ -52,7 +55,7 @@
          <div class="lp-point" data-reveal>
            <div class="lp-point-badge">2</div>
            <h3>負担にならない設計</h3>
-           <p>1日1回でOK。気楽に続けられるUI/UX。</p>
+           <p>1日1回でOK。気楽に続けましょう。</p>
          </div>
          <div class="lp-point" data-reveal>
            <div class="lp-point-badge">3</div>
@@ -81,7 +84,7 @@
          <li class="lp-step" data-reveal>
            <div class="lp-step-num">02</div>
            <div class="lp-step-body">
-             <h3>投稿すると、フォロー中の投稿が見られる</h3>
+             <h3>投稿すると、フォロー中の人の投稿が見られる</h3>
              <p>お互いの近況が自然に入ってくる。</p>
            </div>
          </li>
@@ -89,7 +92,7 @@
            <div class="lp-step-num">03</div>
            <div class="lp-step-body">
              <h3>コメントすると、全員の投稿が見られる</h3>
-             <p>会話が回りだし、コミュニティが生まれる。</p>
+             <p>交流が回りだし、コミュニティが生まれる。</p>
            </div>
          </li>
        </ol>

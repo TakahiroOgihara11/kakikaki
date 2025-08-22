@@ -7,9 +7,28 @@
   <title>かきか記</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
+    <!-- テーマを“CSS読込前”に適用＆復元（最小/モジュール不要） -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('appTheme') || 'blue';
+        document.documentElement.setAttribute('data-theme', saved);
+      } catch (e) {}
+
+      // ヘッダー内のラジオ切替を拾って即時反映＆保存
+      document.addEventListener('change', function (e) {
+        if (e.target && e.target.name === 'theme') {
+          var v = e.target.value || 'blue';
+          document.documentElement.setAttribute('data-theme', v);
+          try { localStorage.setItem('appTheme', v); } catch (e) {}
+        }
+      });
+    })();
+  </script>
+
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
   <style>
-   .modal {
+    .modal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -18,53 +37,82 @@
     background-color: rgba(0,0,0,0.8);
     justify-content: center;
     align-items: center;
-   }
+    }
 
-   .modal img {
+    .modal img {
     max-width: 90%;
     max-height: 90%;
-   }
+    }
 
-   .modal.open {
+    .modal.open {
     display: flex;
-   }
+    }
   </style>
+  
+
 </head>
 
 
 <body>
-  <header>
+
+  <%= javascript_importmap_tags %>
+
+  <header class="app-header">
     <h1 class="site-logo">
-     <%= link_to root_path do %>
-     <%= image_tag "logo.png", alt: "かきか記", class: "site-logo__img" %>
-     <% end %>
+      <%= link_to root_path do %>
+      <%= image_tag "logo.png", alt: "かきか記", class: "site-logo__img" %>
+      <% end %>
     </h1>
+          <div class="nav-theme">
+            <form class="theme-switch theme-switch--inline" aria-label="テーマ切替">
+              <input type="radio" name="theme" id="th-blue"   value="blue"   hidden>
+              <label for="th-blue"   class="theme-dot" title="ブルー"   style="--c1:#1d98e4; --c2:#03a2b4"></label>
+
+              <input type="radio" name="theme" id="th-sunset" value="sunset" hidden>
+              <label for="th-sunset" class="theme-dot" title="サンセット" style="--c1:#ff8a00; --c2:#ffd36e"></label>
+
+              <input type="radio" name="theme" id="th-forest" value="forest" hidden>
+              <label for="th-forest" class="theme-dot" title="フォレスト" style="--c1:#2e7d32; --c2:#9ccc65"></label>
+
+              <input type="radio" name="theme" id="th-gray"   value="gray"   hidden>
+              <label for="th-gray"   class="theme-dot" title="グレー"   style="--c1:#6e6b62; --c2:#6e6b62"></label>
+            </form>
+          </div>
+
     <div class="header-list">
       <ul>
         <% if user_signed_in? %>
-          <li><%= link_to 'マイページ', user_path(current_user) %></li>
-          <li><%= link_to '日記を投稿する', new_tweet_path %></li>
+          <!-- テーマ切替を“ナビの先頭”に固定したいのでクラスを付与 -->
+          
 
+          <li><%= link_to 'マイページ', user_path(current_user) %></li>
+          <li><%= link_to '日記を書く', new_tweet_path %></li>
           <% if posted_today?(current_user) %>
             <li><%= link_to 'フォローした人の日記を見る', following_posts_tweets_path %></li>
           <% else %>
             <li><span class="btn-disabled">フォローした人の日記を見る（本日未投稿）</span></li>
           <% end %>
-
           <li><%= link_to 'ユーザー一覧', users_path %></li>
-          <li><%= button_to 'ログアウト', destroy_user_session_path, method: :delete, form: { style: "display:inline;" },  class: "btn-ghost" %>
-           </li>
+          <li><%= button_to 'ログアウト', destroy_user_session_path, method: :delete, form: { style: "display:inline;" },  class: "btn-ghost" %></li>
         <% else %>
           <li><%= link_to "新規登録", new_user_registration_path %></li>
           <li><%= link_to "ログイン", new_user_session_path %></li>
         <% end %>
       </ul>
     </div>
+
   </header>
+
+
+ 
 
   <main>
     <%= yield %>
   </main>
+    
+
+
+
 </body>
 
 

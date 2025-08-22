@@ -1,64 +1,227 @@
-<h1>フォロー中の人の今日の日記</h1>
-<p>今日の日付: <%= Date.today.strftime('%Y年%m月%d日') %></p>
+<!DOCTYPE html>
+<html lang="ja">
 
-<% if @tweets.any? %>
-  <% @tweets.each do |tweet| %>
-    <div class="card">
-      <h3>タイトル: <%= tweet.name %></h3>
-      <p><strong>投稿者:</strong> <%= tweet.user.name %></p>
-      <p><%= tweet.diary %></p>
-      <small><%= tweet.created_at.strftime('%H:%M') %></small>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>かきか記</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+  <%= javascript_importmap_tags %>
+</head>
 
-      <% if tweet.image.attached? %>
-        <%= image_tag tweet.image, size: "300x200", class: "clickable-image", data: { full_image_url: url_for(tweet.image) } %>
-      <% end %>
+<img src="<%= asset_path('view.png') %>" alt="ビュー" class="bg-view">
+<img src="<%= asset_path('heart.svg') %>" alt="ハート" class="heart-image">
 
-      <!-- コメント一覧 -->
-      <div class="comments">
-        <p><strong>コメント一覧:</strong></p>
-        <% tweet.comments.each do |comment| %>
-          <div class="comment">
-            <strong><%= comment.user.name %>:</strong>
-            <%= comment.content %>
-          </div>
+<section class="following-todayy">
+  <section class="following-today">
+
+    <header class="ft-bar">
+      <div class="ft-bar__left">
+        <h1 class="ft-title">フォロー中の人の今日の日記</h1>
+      
+      </div>
+      <div class="ft-bar__right">
+        <% total = @tweets.size %>
+        <% commented = @tweets.count { |t| t.comments.where(user_id: current_user.id).exists? } %>
+        <div class="ft-progress" role="progressbar" aria-valuemin="0" aria-valuemax="<%= total %>" aria-valuenow="<%= commented %>">
+          <span class="ft-progress__label"><%= commented %> / <%= total %></span>
+          <span class="ft-progress__bar"><i style="width:<%= total.zero? ? 0 : (100.0*commented/total).round %>%"></i></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ルール告知バー -->
+    <div class="ft-note">
+      <strong>ルール：</strong> <span>まずは <em>一番上の投稿</em> にコメントすると、<u>すべての投稿</u> が見られます。</span>
+    </div>
+
+    <% if @tweets.any? %>
+      <div class="ft-container">
+        <% @tweets.each_with_index do |tweet, idx| %>
+          <% unlocked = @unlock_all || idx == 0 %>
+
+          <article class="ft-card <%= 'is-locked' unless unlocked %>" data-reveal>
+            <!-- 作者ヘッダ -->
+            <header class="ft-author">
+              <div class="ft-author__avatar">
+                <% if tweet.user.profile_image.attached? %>
+                  <%= image_tag tweet.user.profile_image, alt: tweet.user.name %>
+                <% else %>
+                  <%= image_tag "default_icon.png", alt: tweet.user.name %>
+                <% end %>
+              </div>
+              <div class="ft-author__meta">
+                <div class="ft-author__name"><%= tweet.user.name %></div>
+
+              </div>
+              <time class="ft-time"><%= (tweet.respond_to?(:time) && tweet.time.present?) ? tweet.time.strftime('%H:%M') : tweet.created_at.strftime('%H:%M') %></time>
+            </header>
+
+            <!-- 本文 -->
+            <div class="ft-body">
+              <h3 class="ft-posttitle">「<%= tweet.name %>」</h3>
+              <div class="ft-text"><%= simple_format(tweet.diary) %></div>
+
+              <% if tweet.image.attached? %>
+                <figure class="ft-image">
+                  <%= image_tag tweet.image,
+                        class: "clickable-image",
+                        alt: tweet.name,
+                        data: { full_image_url: url_for(tweet.image) } %>
+                  <figcaption>クリックで拡大</figcaption>
+                </figure>
+              <% end %>
+            </div>
+
+            <!-- アクション行：いいね + コメント開閉 -->
+            <div class="ft-actions">
+              <div class="like-row">
+                <% if current_user.already_liked?(tweet) %>
+                  <%= button_to "💗 いいね (#{tweet.likes.count})",
+                                tweet_like_path(tweet, current_user.likes.find_by(tweet_id: tweet.id)),
+                                method: :delete,
+                                class: "btn-like btn-like--on",
+                                data: { ripple: true } %>
+                <% else %>
+                  <%= button_to "♡ いいね (#{tweet.likes.count})",
+                                tweet_likes_path(tweet),
+                                method: :post,
+                                class: "btn-like",
+                                data: { ripple: true } %>
+                <% end %>
+              </div>
+
+              <% c = tweet.comments.size %>
+              <button type="button"
+                      class="ft-comments-toggle"
+                      data-target="comments-<%= tweet.id %>"
+                      aria-expanded="false"
+                      aria-controls="comments-<%= tweet.id %>">
+                コメント欄を表示 <span class="ft-count"><%= c %></span>
+              </button>
+            </div>
+
+            <!-- コメント（折りたたみ） -->
+            <section id="comments-<%= tweet.id %>" class="ft-comments is-collapsed" aria-hidden="true">
+              <div class="ft-comments__wrap">
+                <h4 class="ft-comments__ttl">コメント</h4>
+
+                <% if tweet.comments.any? %>
+                  <ul class="ft-comments__list">
+                    <% tweet.comments.each do |comment| %>
+                      <li class="ft-comment" data-reveal>
+                        <div class="ft-comment__head">
+                          <span class="ft-comment__name"><%= comment.user.name %></span>
+                        </div>
+                        <div class="ft-comment__body"><%= comment.content %></div>
+                      </li>
+                    <% end %>
+                  </ul>
+                <% else %>
+                  <p class="ft-comments__empty">まだコメントはありません。</p>
+                <% end %>
+              </div>
+
+              <% if user_signed_in? %>
+                <%= form_with(model: [tweet, @comment], local: true, html: { class: "ft-form" }) do |f| %>
+                  <div class="ft-form__row">
+                    <div class="ft-prompts" aria-label="コメントのヒント">
+                      <% [].each do |p| %>
+                        <button type="button" class="ft-chip" data-insert="<%= p %>">#<%= p %></button>
+                      <% end %>
+                    </div>
+                    <%= f.text_area :content, placeholder: "ひとこと書いて次へ…", class: "ft-input", rows: 3 %>
+                  </div>
+                  <div class="ft-form__actions">
+                    <%= f.submit "コメントする", class: "ft-btn ft-btn--primary", data: { ripple: true } %>
+                  </div>
+                <% end %>
+              <% end %>
+            </section>
+
+            <!-- ロック表示（先頭以外＆未解放） -->
+            <% unless unlocked %>
+              <div class="ft-lock" aria-hidden="true">
+                <div class="ft-lock__inner">
+                  <div class="ft-lock__icon">🔒</div>
+                  <p><em>一番上の投稿</em>にコメントすると、この投稿を含め全てが見られます。</p>
+                </div>
+              </div>
+            <% end %>
+          </article>
         <% end %>
       </div>
 
-      <!-- コメントフォーム -->
-      <% if user_signed_in? %>
-        <%= form_with(model: [tweet, @comment], local: true) do |f| %>
-          <%= f.text_area :content, placeholder: "コメントを書く" %>
-          <%= f.submit "コメントする" %>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
+      <!-- 画像モーダル -->
+      <div id="image-modal" class="modal"><img id="modal-image" src=""></div>
 
-  <!-- モーダル部分（1つだけあればOK） -->
-  <div id="image-modal" class="modal">
-    <img id="modal-image" src="">
-  </div>
+      <!-- JS（展開・チップ・リップル・モーダル・フェードイン） -->
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          // 画像モーダル
+          const modal = document.getElementById("image-modal");
+          const modalImg = document.getElementById("modal-image");
+          document.querySelectorAll(".following-today .clickable-image").forEach(img => {
+            img.addEventListener("click", () => {
+              modalImg.src = img.dataset.fullImageUrl;
+              modal.classList.add("open");
+            });
+          });
+          modal.addEventListener("click", () => { modal.classList.remove("open"); modalImg.src = ""; });
 
-  <!-- JS：クリックで拡大 -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const modal = document.getElementById("image-modal");
-      const modalImg = document.getElementById("modal-image");
+          // コメント開閉
+          document.querySelectorAll(".following-today .ft-comments-toggle").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const id = btn.getAttribute("data-target");
+              const section = document.getElementById(id);
+              const expanded = btn.getAttribute("aria-expanded") === "true";
+              btn.setAttribute("aria-expanded", String(!expanded));
+              section.setAttribute("aria-hidden", String(expanded));
+              section.classList.toggle("is-collapsed", expanded);
+              section.classList.toggle("is-expanded", !expanded);
+            });
+          });
 
-      document.querySelectorAll(".clickable-image").forEach(img => {
-        img.addEventListener("click", () => {
-          modalImg.src = img.dataset.fullImageUrl;
-          modal.classList.add("open");
+          // コメントチップ
+          document.querySelectorAll(".following-today .ft-chip").forEach(chip => {
+            chip.addEventListener("click", (e) => {
+              const textarea = e.target.closest(".ft-form").querySelector(".ft-input");
+              const insert = e.target.getAttribute("data-insert") || "";
+              const v = textarea.value;
+              textarea.value = v ? (v + " " + insert) : insert;
+              textarea.focus();
+            });
+          });
+
+          // フェードイン
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("is-in"); });
+          }, { threshold: 0.08, rootMargin: "0px 0px -10% 0px" });
+          document.querySelectorAll(".following-today [data-reveal]").forEach(el => io.observe(el));
+
+          // リップル
+          document.querySelectorAll('[data-ripple]').forEach(el => {
+            el.addEventListener('click', function (e) {
+              const r = document.createElement('span');
+              r.className = 'ripple';
+              const rect = this.getBoundingClientRect();
+              const size = Math.max(rect.width, rect.height);
+              r.style.width = r.style.height = size + 'px';
+              r.style.left = (e.clientX - rect.left - size/2) + 'px';
+              r.style.top  = (e.clientY - rect.top  - size/2) + 'px';
+              this.appendChild(r);
+              setTimeout(() => r.remove(), 500);
+            });
+          });
         });
-      });
+      </script>
+    <% else %>
+      <div class="ft-empty">
+        <p>今日の投稿はまだありません。</p>
+      </div>
+    <% end %>
+  </section>
 
-      modal.addEventListener("click", () => {
-        modal.classList.remove("open");
-        modalImg.src = "";
-      });
-    });
-  </script>
-
-<% else %>
-  <p>今日の投稿はまだありません。</p>
-<% end %>
+</section>

@@ -1,41 +1,47 @@
-
-
 <div class="user-show-page">
+  <img src="<%= asset_path('mypage.png') %>" alt="マイページ" class="mypage-image">
+  <img src="<%= asset_path('book.png') %>" alt="本" class="book-image">
   <div class="content">
 
-   <section class="user-hero">
-     <div class="user-hero__top">
-       <h1 class="user-hero__heading">
-         <%= @user == current_user ? "マイページ" : "#{@user.name}さんのプロフィール" %>
-       </h1>
-       <% if current_user == @user %>  
-         <p class="user-hero__sub">
-           <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
-             今日は日記を書きました <%= image_tag "check_icon.svg", alt: "チェックマーク", class: "check-icon" %>
-           <% else %>
-             今日は日記を書きましたか？
-           <% end %>
-         </p>
-       <% end %>
-     </div>
+    <!-- ヒーロー（マイページ/プロフィール見出し + 状態） -->
+    <section class="user-hero">
+      <div class="user-hero__top">
+        <h1 class="user-hero__heading">
+          <%= @user == current_user ? "マイページ" : "#{@user.name}さんのプロフィール" %>
+        </h1>
 
-     <% if current_user == @user %>  
-       <div class="user-hero__actions">
-         <%= link_to "日記を投稿する", new_tweet_path, class: "btn btn--primary" %>
-         <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
-           <%= link_to "フォロー中の人の日記を見る", following_posts_tweets_path, class: "btn btn--ghost" %>
-         <% else %>
-           <span class="btn btn--disabled">フォロー中の人の日記を見る（本日未投稿）</span>
-         <% end %>
-         <%= link_to "ユーザー一覧", users_path, class: "btn btn--ghost" %>
-         <%= link_to "編集する", edit_user_registration_path, class: "btn btn--ghost" %>
-       </div>
-     <% end %>
-   </section>
+        <% if current_user == @user %>
+          <p class="user-hero__sub">
+            <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
+              今日は日記を書きました
+              <%= image_tag "check_icon.svg", alt: "チェックマーク", class: "check-icon" %>
+            <% else %>
+              今日も日記を書こう！
+            <% end %>
+          </p>
+        <% end %>
+      </div>
 
+      <% if current_user == @user %>
+        <div class="user-hero__actions">
+          <%= link_to "日記を書く", new_tweet_path, class: "btn btn--primary" %>
 
+          <% if @user.tweets.where(created_at: Time.zone.now.all_day).exists? %>
+            <%= link_to "フォロー中の人の日記を見る", following_posts_tweets_path, class: "btn btn--ghost" %>
+          <% else %>
+            <span class="btn btn--disabled">フォロー中の人の日記を見る（本日未投稿）</span>
+          <% end %>
+
+          <%= link_to "ユーザー一覧", users_path, class: "btn btn--ghost" %>
+          <%= link_to "プロフィールを編集する", edit_user_registration_path, class: "btn btn--ghost" %>
+        </div>
+      <% end %>
+    </section>
+
+    <!-- 2カラム：左=プロフィール、右=投稿フィード（フル幅グリッド） -->
     <section class="user-main">
       <aside>
+        <!-- プロフィールカード -->
         <div class="card">
           <div class="profile-card__header">
             <%= image_tag(@user.profile_image.attached? ? @user.profile_image : "default_icon.png",
@@ -44,12 +50,14 @@
               <h2 class="profile-card__name"><%= @user.name %></h2>
               <% if current_user == @user %>
                 <p class="profile-card__email"><%= @user.email %></p>
+                
               <% end %>
             </div>
           </div>
           <p class="profile-card__bio"><%= @user.profile %></p>
         </div>
 
+        <!-- 初めての日記（閲覧者が他人のプロフを見る場合のみ） -->
         <% unless current_user == @user %>
           <div class="card" style="margin-top:12px">
             <h3 class="section-title">初めての日記</h3>
@@ -59,7 +67,8 @@
                   <h4 class="recent-item__title"><%= tweet.name %></h4>
                   <p class="recent-item__meta"><%= tweet.created_at.strftime('%Y-%m-%d %H:%M') %></p>
                   <% if tweet.image.attached? %>
-                    <%= image_tag tweet.image, class: "recent-item__img clickable-image", data: { full_image_url: url_for(tweet.image) } %>
+                    <%= image_tag tweet.image, class: "recent-item__img clickable-image",
+                                   data: { full_image_url: url_for(tweet.image) } %>
                   <% end %>
                   <p>💗 <%= tweet.likes.count %>件のいいね</p>
                 </article>
@@ -69,34 +78,125 @@
         <% end %>
       </aside>
 
-        <% if current_user == @user %>
-            <section>
-             <h3 class="section-title">あなたの投稿一覧</h3>
-              <div class="timeline">
-               <% @user.tweets.order(created_at: :desc).each do |t| %>
-                  <article class="post">
-                   <h4 class="post__title"><%= t.name %></h4>
-                    <p class="post__meta"><%= t.time.strftime('%Y-%m-%d %H:%M') if t.time %></p>
-                   <p><%= t.diary %></p>
-                   <% if t.image.attached? %>
-                      <%= image_tag t.image, class: "post__img clickable-image", data: { full_image_url: url_for(t.image) } %>
-                    <% end %>
-                    <p>💗 <%= t.likes.count %>件のいいね</p>
-                  </article>
-               <% end %>
-              </div>
-           </section>
-        <% end %>
+      <!-- 投稿フィード（最新順 / 可変グリッド） -->
+      <% if current_user == @user %>
+        <section class="us-feed">
+          <% @user.tweets.order(created_at: :desc).each do |t| %>
+          <div class="us-post card">
+            <header class="us-post__head">
+              <h4 class="post__title"><%= t.name %></h4>
+              <p class="post__meta"><%= t.time&.strftime('%Y-%m-%d %H:%M') || t.created_at.strftime('%Y-%m-%d %H:%M') %></p>
+            </header>
 
-      </section>
+            <div class="post__body"><%= simple_format(t.diary) %></div>
+
+            <% if t.image.attached? %>
+              <div class="us-image">
+                <%= image_tag t.image, class: "post__img clickable-image",
+                              data: { full_image_url: url_for(t.image) } %>
+              </div>
+            <% end %>
+
+            <footer class="us-post__foot">
+              <p class="us-like">💗 <%= t.likes.count %>件のいいね</p>
+
+              <% c = t.comments.size %>
+              <button type="button"
+                      class="us-comments__toggle"
+                      data-target="us-comments-<%= t.id %>"
+                      aria-expanded="false"
+                      aria-controls="us-comments-<%= t.id %>">
+                コメントを表示 <span class="us-count"><%= c %></span>
+              </button>
+            </footer>
+
+            <!-- コメント（折りたたみ） -->
+            <section id="us-comments-<%= t.id %>" class="us-comments is-collapsed" aria-hidden="true">
+              <div class="us-comments__wrap">
+                <h5 class="us-comments__ttl">コメント</h5>
+
+                <% if t.comments.any? %>
+                  <ul class="us-comments__list">
+                    <% t.comments.each do |comment| %>
+                      <li class="us-comment">
+                        <div class="us-comment__head">
+                          <span class="us-comment__name"><%= comment.user.name %></span>
+                          <time class="us-comment__time"><%= comment.created_at.strftime('%m/%d %H:%M') %></time>
+                        </div>
+                        <div class="us-comment__body"><%= comment.content %></div>
+                      </li>
+                    <% end %>
+                  </ul>
+                <% else %>
+                  <p class="us-comments__empty">まだコメントはありません。</p>
+                <% end %>
+              </div>
+
+
+            </section>
+          </div>
+
+          <% end %>
+        
+        </section>
+      <% end %>
     </section>
 
-    <!-- 既存のモーダルはそのまま使う -->
+    <!-- 画像モーダル（既存の仕組みを継続） -->
     <div id="image-modal" class="modal"><img id="modal-image" src=""></div>
-
   </div>
 </div>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // 画像モーダル
+    const modal = document.getElementById("image-modal");
+    const modalImg = document.getElementById("modal-image");
+    document.querySelectorAll(".user-show-page .clickable-image").forEach(img => {
+      img.addEventListener("click", () => {
+        modalImg.src = img.dataset.fullImageUrl;
+        modal.classList.add("open");
+      });
+    });
+    modal.addEventListener("click", () => { modal.classList.remove("open"); modalImg.src = ""; });
 
+    // コメント開閉
+    document.querySelectorAll(".user-show-page .us-comments__toggle").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-target");
+        const section = document.getElementById(id);
+        const expanded = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!expanded));
+        section.setAttribute("aria-hidden", String(expanded));
+        section.classList.toggle("is-collapsed", expanded);
+        section.classList.toggle("is-expanded", !expanded);
+      });
+    });
 
+    // コメントチップ
+    document.querySelectorAll(".user-show-page .us-chip").forEach(chip => {
+      chip.addEventListener("click", (e) => {
+        const textarea = e.target.closest(".us-form").querySelector(".us-input");
+        const insert = e.target.getAttribute("data-insert") || "";
+        const v = textarea.value;
+        textarea.value = v ? (v + " " + insert) : insert;
+        textarea.focus();
+      });
+    });
 
+    // リップル
+    document.querySelectorAll('.user-show-page [data-ripple]').forEach(el => {
+      el.addEventListener('click', function (e) {
+        const r = document.createElement('span');
+        r.className = 'ripple';
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        r.style.width = r.style.height = size + 'px';
+        r.style.left = (e.clientX - rect.left - size/2) + 'px';
+        r.style.top  = (e.clientY - rect.top  - size/2) + 'px';
+        this.appendChild(r);
+        setTimeout(() => r.remove(), 500);
+      });
+    });
+  });
+</script>

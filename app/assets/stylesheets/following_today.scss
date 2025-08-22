@@ -1,0 +1,497 @@
+/* ===================================================
+   Following Today ページ用スタイル
+   （内容は変えずに整理・章立て）
+   =================================================== */
+
+
+/* ------------------------------
+   1. ページ全体
+------------------------------ */
+.following-todayy{
+  z-index: 0;
+  position: static;
+  min-height: 100svh;
+  color: var(--ink);
+
+  /* 背景 */
+  background:
+    radial-gradient(60% 50% at 50% 20%, rgba(255,255,255,0.92), rgba(255,255,255,0.5)),
+    linear-gradient(45deg, #538285, #ffffff);
+  background-attachment: fixed;
+
+  /* 枠・角丸・影 */
+  border-radius: 24px;
+  outline: 3px solid #824f04;
+  box-shadow: 4px 4px 10px rgba(31, 28, 28, 0.12);
+
+  /* 下余白は元CSSに合わせる */
+  padding-bottom: 56px;
+  
+}
+.following-today {
+
+  z-index: 5;
+  
+  
+  /* 内側も角丸に沿わせる */
+}
+
+
+
+
+/* ------------------------------
+   2. 固定ヘッダー
+------------------------------ */
+.ft-bar {
+
+  display: flex;
+
+
+  margin-left: 3%;
+  width: 90%;
+  box-shadow: inset 0 0 0 3px #ff880039;outline: 3px solid #ffffff;
+
+  /* 初回アニメーション */
+  opacity: 0;
+  transform: translateY(-12px) scale(.98);
+  animation: ftbar-pop .7s cubic-bezier(.22,.9,.2,1) .15s forwards;
+  will-change: transform, opacity;
+
+  background: radial-gradient(circle, #ff9a9e 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes ftbar-pop {
+  0%   { opacity: 0; transform: translateY(-12px) scale(.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+/* ------------------------------
+   3. ヘッダ内タイトル・進捗
+------------------------------ */
+.ft-title {
+  
+  justify-self: center; /* 中央の列の真ん中に配置 */
+  justify-content: center; /* 横方向に中央揃え */
+  align-items: center;     /* 縦方向も中央揃え */
+  font-weight: 900;
+  font-size: 50px;
+  animation: floaty 6s ease-in-out infinite;
+
+  /* 目立つアニメーション */
+}
+
+@keyframes floaty {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+} 
+
+
+
+.following-today .ft-progress {
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width: 140px;
+  border-radius: 10px;
+  animation: glow 1.5s infinite alternate;
+
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px #ff8a00; }
+  50% { box-shadow: 0 0 20px #ffae17; }
+}
+
+
+.following-today .ft-progress__label {
+  font-weight: 800;
+  font-size: 12px;
+  color:#6b5d52;
+}
+.following-today .ft-progress__bar {
+  position: relative;
+  flex: 1 1 auto;
+  height: 8px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(0,0,0,.06);
+}
+.following-today .ft-progress__bar i {
+  display:block;
+  height:100%;
+  background: linear-gradient(90deg, #ffae17, #ff8a00);
+}
+
+
+/* ------------------------------
+   4. 投稿コンテナ＆カード
+------------------------------ */
+.following-today .ft-container {
+  max-width:1040px;
+  width:92%;
+  margin: 16px auto;
+  display:grid;
+  gap: 16px;
+  z-index: 3;
+  animation: shimmer 2s infinite;
+  
+
+}
+@keyframes shimmer {
+  100% { left: 150%; }
+}
+
+.following-today .ft-card {
+  position: relative;
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  padding: clamp(14px, 3.2vw, 22px);
+}
+
+/* フェードイン用 */
+.following-today [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .45s ease, transform .45s ease;
+  
+}
+.following-today .is-in {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ------------------------------
+   5. 作者ヘッダ
+------------------------------ */
+.following-today .ft-author {
+  display:grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items:center;
+  
+}
+.following-today .ft-author__avatar img {
+  width:52px; height:52px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+.following-today .ft-author__name { font-weight:900; color:#2a2100;font-size: 25px;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+.following-today .ft-time { font-size:12px; color: var(--muted); }
+
+
+
+/* ------------------------------
+   6. 本文エリア
+------------------------------ */
+.following-today .ft-body { margin-top: 10px; }
+.following-today .ft-posttitle {
+  margin:.2rem 0 .6rem;
+  font-size: clamp(16px,2.2vw,20px);
+  font-weight:900;
+}
+.following-today .ft-text { color:#3f342c; line-height:1.72; }
+
+.following-today .ft-image { margin: 12px 0 0; }
+.following-today .ft-image img {
+  display:block;
+  width:100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 10px 20px rgba(0,0,0,.06);
+  cursor: zoom-in;
+}
+.following-today .ft-image figcaption {
+  font-size:12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+
+/* ------------------------------
+   7. アクション行（いいね＋コメント）
+------------------------------ */
+.following-today .ft-actions {
+  margin-top: 12px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.following-today .like-row { display:flex; gap:8px; }
+
+.following-today .btn-like {
+  display:inline-block;
+  padding:10px 14px;
+  border-radius:12px;
+  font-weight:800;
+  background:#fff;
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:0 2px 0 rgba(0,0,0,.08);
+  cursor:pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .05s, box-shadow .25s, background-color .25s;
+}
+.following-today .btn-like:hover   { transform: translateY(-1px); }
+.following-today .btn-like--on    { background:#ffe9f0; border-color:#ff6aa2; }
+
+.following-today .ripple {
+  position:absolute;
+  border-radius:50%;
+  transform: scale(0);
+  animation: ripple .5s linear;
+  background: rgba(0,0,0,.2);
+}
+@keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+.following-today .ft-comments-toggle {
+  background: #fff;
+  border:1px dashed rgba(0,0,0,.15);
+  color:#4b4038;
+  font-weight:800;
+  padding:10px 12px;
+  border-radius: 999px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition: transform .05s, box-shadow .25s, background-color .25s;
+}
+.following-today .ft-comments-toggle:hover { transform: translateY(-1px); }
+
+.following-today .ft-count {
+  display:inline-grid;
+  place-items:center;
+  min-width: 24px; height:24px; padding:0 6px;
+  background:#fff4cc;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:999px;
+  font-size:12px;
+}
+
+
+/* ------------------------------
+   8. コメントエリア
+------------------------------ */
+.following-today .ft-comments {
+  margin-top: 8px;
+  background: #faf7f0;
+  border: 1px dashed rgba(0,0,0,.08);
+  border-radius: 14px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: max-height .35s ease, opacity .25s ease, transform .25s ease;
+}
+.following-today .ft-comments.is-expanded {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 1200px;
+}
+
+.following-today .ft-comments__wrap { padding: 12px; }
+.following-today .ft-comments__ttl  { margin:0 0 6px; font-size: 13px; color:#6b5d52; font-weight: 800; }
+.following-today .ft-comments__empty{ margin:6px 0 0; color:#8a7e73; font-size: 13px; }
+
+.following-today .ft-comments__list {
+  display:grid; gap:8px;
+  margin: 8px 0 0; padding:0;
+  list-style:none;
+}
+.following-today .ft-comment {
+  background:#fff;
+  border:1px solid rgba(0,0,0,.05);
+  border-radius:10px;
+  padding:10px 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.03);
+}
+.following-today .ft-comment__head {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:8px; margin-bottom:4px;
+}
+.following-today .ft-comment__name { font-weight:800; font-size: 13px; color:#4b4038; }
+.following-today .ft-comment__body { color:#4b4038; font-size: 14px; line-height: 1.6; }
+
+
+/* ------------------------------
+   9. コメントフォーム
+------------------------------ */
+.following-today .ft-form {
+  width: 95%;
+  display:grid; gap:8px;
+  padding: 10px 12px 12px;
+  border-top: 1px dashed rgba(0,0,0,.08);
+}
+.following-today .ft-form__row { display:grid; gap:8px; }
+.following-today .ft-prompts   { display:flex; flex-wrap:wrap; gap:6px; }
+.following-today .ft-chip {
+  border:1px dashed rgba(0,0,0,.15);
+  background:#fff;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:12px;
+  cursor:pointer;
+}
+.following-today .ft-input {
+  width:100%;
+  border:1px solid #e8ded2;
+  border-radius:10px;
+  padding:12px 14px;
+  background:#fff;
+  transition:border-color .2s, box-shadow .2s;
+}
+.following-today .ft-input:focus {
+  border-color:#ffae17;
+  box-shadow:0 0 0 4px rgba(255,174,23,.2);
+  outline:0;
+}
+.following-today .ft-form__actions { display:flex; justify-content:flex-end; }
+.following-today .ft-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:10px 16px;
+  border-radius:12px;
+  font-weight:900;
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow:0 2px 0 rgba(0,0,0,.12);
+  cursor:pointer;
+  position: relative;
+  overflow: hidden;
+}
+.following-today .ft-btn--primary {
+  background:#ffae17; color:#2a2100;
+}
+.following-today .ft-btn--primary:hover {
+  transform: translateY(-1px);
+}
+
+
+/* ------------------------------
+   10. ロック状態
+------------------------------ */
+.following-today .ft-card.is-locked .ft-lock {
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(2px);
+  border-radius:18px;
+}
+.following-today .ft-lock__inner {
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 10px 20px rgba(0,0,0,.08);
+  text-align:center;
+}
+.following-today .ft-lock__icon {
+  font-size:24px;
+  margin-bottom:6px;
+}
+
+
+/* ------------------------------
+   11. 空状態
+------------------------------ */
+.following-today .ft-empty {
+  max-width:760px;
+  margin: 14vh auto;
+  text-align:center;
+  color:#6b5d52;
+}
+
+
+/* ------------------------------
+   12. モーダル
+------------------------------ */
+.modal {
+  display:none;
+  position:fixed; inset:0;
+  z-index:1000;
+  background:rgba(0,0,0,0.82);
+  align-items:center;
+  justify-content:center;
+}
+.modal.open { display:flex; }
+.modal img   {
+  max-width:92vw;
+  max-height:92vh;
+  border-radius:10px;
+}
+
+
+/* ------------------------------
+   13. ルール告知バー
+------------------------------ */
+.following-today .ft-note {
+  position: sticky;
+  top: 69px;
+  z-index: 999;
+
+  background: #fff8e6;
+  color:#4b4038;
+  border-bottom: 1px dashed rgba(0,0,0,.1);
+  padding: 8px clamp(12px, 3.5vw, 24px);
+  font-size: 14px;
+}
+.following-today .ft-note em { font-style: normal; font-weight: 900; }
+.following-today .ft-note u  { text-underline-offset: 2px; }
+
+
+/* ------------------------------
+   14. レスポンシブ
+------------------------------ */
+@media (max-width: 780px){
+  .following-today .ft-author {
+    grid-template-columns: auto 1fr;
+  }
+  .following-today .ft-time {
+    justify-self: end;
+    grid-column: 1 / -1;
+  }
+}
+
+
+
+.heart-image {
+  position: fixed;
+  top: 3%;
+  left: 2%;
+  width: 38px;   /* 大きさは調整してね */
+  height: auto;
+  animation: spin 8s linear infinite;
+  z-index: 55;
+  pointer-events: none; /* クリック無効化 */
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+
+
+.bg-view {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 70vw;    /* 画面の9割を占める感じ */
+  height: auto;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2; /* 他の要素の下に */
+  animation: bubbleUp 6s ease-in infinite;
+}

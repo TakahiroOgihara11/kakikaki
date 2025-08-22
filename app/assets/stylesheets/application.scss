@@ -21,7 +21,7 @@ html, body {
   margin: 0;    /* 余白を0に */
   padding: 0;   /* 余白を0に */
  
-  background: linear-gradient(45deg, #1d98e4, #03a2b4); /* グラデーション背景 */
+  // background: linear-gradient(45deg, #6124e5, #7f12d3); /* グラデーション背景 */
   font-family: 'Rounded Mplus 1c', sans-serif; /* 楽しげで親しみやすいフォント */
   color: #2e1a10; /* 文字色 */
 }
@@ -30,7 +30,7 @@ html, body {
 body {
   margin: 0;
   font-family: 'Helvetica Neue', sans-serif;
-  background-color: #fdf8f5;
+  // background-color: #fdf8f5;
   color: #2e1a10;
   
 }
@@ -69,7 +69,7 @@ h1 a {
 .header-list ul {
   list-style: none;
   display: flex;
-  gap: 1rem;
+  gap: 10rem;
   margin: 0;
   padding: 0;
 }
@@ -148,9 +148,341 @@ header {
 }
 
 .site-logo__img {
-  transform: scale(1.8);    /* 見た目だけ拡大 */
+  transform: scale(1.2);    /* 見た目だけ拡大 */
   transform-origin: left center; /* 左基準で拡大 */
   height: auto; /* ロゴの高さ */
   width: 100px;  /* 幅は自動で比率維持 */
   display: block;
+  margin-left: 70px;
+
 }
+
+
+
+
+
+/* ==== Brand palette (全体ベースの青〜ティールに合うアクセント) ==== */
+:root {
+  --brand:    #ffae17; /* 黄色 */
+  --brand-2:  #ff8a00; /* オレンジ */
+  --ink:      #10343d; /* テキスト（濃い青緑） */
+  --accent-br:#401201; /* 茶（副色） */
+}
+
+/* ==== ヘッダー：ガラス＋アニメ＋進捗バー ==== */
+.app-header{
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin: 8px 12px; padding: 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.80), rgba(255,255,255,.62));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 8px 28px rgba(0,0,0,.12);
+  color: var(--ink);
+  transition: background .3s ease, box-shadow .3s ease, transform .15s ease;
+}
+
+/* スクロールで少し締まる */
+.app-header.is-scrolled{
+  background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.7));
+  box-shadow: 0 14px 38px rgba(0,0,0,.16);
+  transform: translateY(-1px);
+}
+
+/* 上部にスクロール進捗バー（JSが var(--scroll-ratio) を更新） */
+.app-header::after{
+  content:""; position:absolute; left:0; top:0; height:3px; width:100%;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  transform-origin: 0 50%;
+  transform: scaleX(var(--scroll-ratio, 0));
+}
+
+/* ロゴ：少し大きく＆マグネット効果用の余白 */
+.app-header .site-logo{ display:flex; align-items:center; gap:10px; }
+.app-header .site-logo__img{
+  width: 80px; height:auto;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.08));
+  transition: transform .12s ease;
+}
+
+/* ナビ（既存の .header-list を活かして上書き） */
+.app-header .header-list ul{
+  justify-content: center;
+  align-items: center;
+  display:flex; align-items:center; flex-wrap:wrap;
+  gap: 40px; margin-right: 0px; padding-right: 160px; list-style:none;
+}
+
+/* リンク・ボタンの見た目（既存 a / form input を横断） */
+.app-header .header-list a,
+.app-header .header-list form input[type="submit"],
+.app-header .btn-ghost,
+.app-header .btn-disabled{
+
+  position: relative;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  font-weight: 800; letter-spacing: .02em;
+  cursor: pointer;
+  transition: transform .05s ease, box-shadow .25s ease, background-color .25s ease, color .25s ease;
+}
+
+/* ホバー時はうっすら白ガラス化 */
+.app-header .header-list a:hover,
+.app-header .header-list form input[type="submit"]:hover{
+  background: rgba(255,255,255,.75);
+  box-shadow: 0 2px 0 rgba(0,0,0,.08);
+  transform: translateY(-1px);
+}
+
+/* 有効リンクの“グラデ下線” */
+.app-header .header-list a::after{
+  content:""; position:absolute; left:10%; right:10%; bottom:-3px; height:2px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .22s ease;
+}
+.app-header .header-list a:hover::after,
+.app-header .header-list a.is-active::after{ transform: scaleX(1); }
+
+/* ゴースト（既存の .btn-ghost クラスもここで統一） */
+.app-header .btn-ghost{
+  background: rgba(255,255,255,.65);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 2px 0 rgba(0,0,0,.08);
+}
+
+/* 無効（既存 .btn-disabled の上書き） */
+.app-header .btn-disabled{
+  background: rgba(0,0,0,.04);
+  color: #7a7167;
+  border: 1px dashed rgba(0,0,0,.12);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* “フォローの日記を見る”にプチ誘目アニメ（JSで付与） */
+.app-header .is-highlight{
+  animation: hdr-pulse 1.6s ease-in-out infinite;
+}
+@keyframes hdr-pulse{
+  0%{ box-shadow: 0 0 0 0 rgba(255,174,23,.45); }
+  70%{ box-shadow: 0 0 0 10px rgba(255,174,23,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(255,174,23,0); }
+}
+
+/* クリック時のリップル */
+.app-header .ripple{
+  position:absolute; border-radius:50%;
+  transform: scale(0); animation: ripple .5s linear; background: rgba(0,0,0,.2);
+  pointer-events: none;
+}
+@keyframes ripple{ to{ transform: scale(4); opacity:0; } }
+
+/* モバイル狭幅で横スクロール可能に（HTML変更なし） */
+@media (max-width: 720px){
+  .app-header .header-list ul{ overflow-x:auto; overscroll-behavior-x: contain; padding-bottom: 2px; }
+}
+
+
+
+
+
+
+
+
+/* ========= Theme variables (defaults) ========= */
+:root{
+  /* 背景2トーン（グラデ） */
+  --bg1: #1d98e4;   /* デフォ: ブルー */
+  --bg2: #03a2b4;
+
+  /* 文字色・アクセント（アプリ共通の雰囲気） */
+  --ink:       #10343d;  /* 濃い青緑（本文） */
+  --brand:     #ffae17;  /* 黄色（差し色） */
+  --brand-2:   #ff8a00;  /* オレンジ（差し色） */
+  --accent-br: #401201;  /* 茶（副色） */
+
+  /* サーフェス */
+  --surface:   #ffffff;
+}
+
+/* ========= Base apply ========= */
+html, body{
+  background: linear-gradient(45deg, var(--bg1), var(--bg2));
+  color: var(--ink);
+  transition: background .35s ease, color .2s ease;
+}
+
+/* ボタンなど（既存セレクタを上書きしやすいユーティリティ） */
+.btn, .btn-ghost, .header-list a, .header-list form input[type="submit"]{
+  accent-color: var(--brand);
+}
+
+/* ========= Theme switcher (UI) ========= */
+.theme-switch{
+  position: fixed; right: 14px; bottom: 14px; z-index: 60;
+  background: rgba(255,255,255,.70);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 14px; padding: 10px 12px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.14);
+  font-family: inherit; color: inherit;
+}
+.theme-switch input{ display:none; }
+
+.theme-switch__grid{
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+}
+.theme-chip{
+  display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 10px; cursor: pointer;
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(0,0,0,.06);
+  transition: transform .06s ease, box-shadow .25s ease, background-color .25s ease;
+  user-select: none;
+}
+.theme-chip:hover{ transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,.10); }
+.theme-chip__swatch{
+  width: 28px; height: 18px; border-radius: 6px;
+  background: linear-gradient(45deg, var(--c1), var(--c2));
+  border: 1px solid rgba(0,0,0,.08);
+}
+.theme-chip__name{ font-weight: 800; font-size: 12px; }
+
+/* 選択状態の視覚化 */
+#theme-blue:checked   ~ .theme-switch__grid label[for="theme-blue"],
+#theme-sunset:checked ~ .theme-switch__grid label[for="theme-sunset"],
+#theme-forest:checked ~ .theme-switch__grid label[for="theme-forest"],
+#theme-milk:checked   ~ .theme-switch__grid label[for="theme-milk"]{
+  outline: 2px solid var(--brand);
+  background: #fff;
+}
+
+/* ========= Theme variants via :has() ========= */
+/* ※モダンブラウザ対応。もし極端に古い環境が対象なら相談して（フォールバック出す） */
+
+:root:has(#theme-blue:checked){
+  --bg1:#1d98e4; --bg2:#03a2b4;
+  --ink:#10343d; --brand:#ffae17; --brand-2:#ff8a00; --accent-br:#401201;
+}
+
+:root:has(#theme-sunset:checked){
+  --bg1:#ff8a00; --bg2:#ffd36e;
+  --ink:#3a2210; --brand:#ffe06b; --brand-2:#ffae17; --accent-br:#6a2b00;
+}
+
+:root:has(#theme-forest:checked){
+  --bg1:#2e7d32; --bg2:#9ccc65;
+  --ink:#0f2a12; --brand:#ffd86a; --brand-2:#e9b949; --accent-br:#2b3a1f;
+}
+
+:root:has(#theme-milk:checked){
+  --bg1:  ; --bg2:#ffffff;
+  --ink:#3b332c; --brand:#ffb84d; --brand-2:#ff8a00; --accent-br:#6b4a2f;
+}
+
+/* 既存ヘッダーやボタンの色味もテーマに追随させたい場合の上書き例 */
+.app-header{
+  color: var(--ink);
+  background: linear-gradient(180deg, rgba(255,255,255,.80), rgba(255,255,255,.62));
+  border-color: rgba(0,0,0,.06);
+}
+.header-list a:hover,
+.header-list form input[type="submit"]:hover{
+  background: rgba(255,255,255,.75);
+  box-shadow: 0 2px 0 rgba(0,0,0,.08);
+}
+
+
+/* ===== テーマ変数（デフォルトはブルー） ===== */
+:root{
+  --bg1:#1d98e4; --bg2:#03a2b4;   /* 背景グラデ */
+  --ink:#10343d;                  /* 文字色 */
+  --brand:#ffae17; --brand-2:#ff8a00; --accent-br:#401201; /* 既存の差し色 */
+  --surface:#ffffff;
+}
+
+/* 背景＆文字（全ページ基礎） */
+html, body{
+  background: linear-gradient(45deg, var(--bg1), var(--bg2));
+  color: var(--ink);
+  transition: background .35s ease, color .2s ease;
+}
+
+/* ==== テーマごとのカラーバリアント（JSが data-theme を付与） ==== */
+html[data-theme="blue"]{
+  --bg1:#1d98e4; --bg2:#03a2b4;
+  --ink:#10343d; --brand:#ffae17; --brand-2:#ff8a00; --accent-br:#401201;
+}
+html[data-theme="sunset"]{
+  --bg1:#ff8a00; --bg2:#ffd36e;
+  --ink:#3a2210; --brand:#ffe06b; --brand-2:#ffae17; --accent-br:#6a2b00;
+}
+html[data-theme="forest"]{
+  --bg1:#2e7d32; --bg2:#9ccc65;
+  --ink:#0f2a12; --brand:#ffd86a; --brand-2:#e9b949; --accent-br:#2b3a1f;
+}
+html[data-theme="gray"]{
+  --bg1:#504949; --bg2:#3e3b3b;
+  --ink:#2c2c2c; --brand:#ffd12a; --brand-2:#b82121; --accent-br:#4a4a4a;
+}
+
+/* ==== ヘッダー内のコンパクトUI ==== */
+.theme-switch--inline{
+  display:flex; align-items:center; gap:8px;
+  padding:4px 8px; border-radius:999px;
+  background: rgba(255,255,255,.55);
+  border:1px solid rgba(0,0,0,.06);
+  backdrop-filter: blur(6px);
+}
+.theme-switch--inline .theme-dot{
+  width:18px; height:18px; border-radius:50%;
+  background: linear-gradient(45deg, var(--c1), var(--c2));
+  border:1px solid rgba(0,0,0,.12);
+  cursor:pointer; display:inline-block;
+  transition: transform .08s ease, box-shadow .25s ease;
+}
+.theme-switch--inline .theme-dot:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+}
+
+/* チェック中の視覚化（リング） */
+#th-blue:checked   + label[for="th-blue"],
+#th-sunset:checked + label[for="th-sunset"],
+#th-forest:checked + label[for="th-forest"],
+#th-gray:checked   + label[for="th-gray"]{
+  box-shadow: 0 0 0 3px rgba(255,255,255,.9), 0 0 0 5px var(--brand);
+}
+
+
+/* === THEME OVERRIDES (force apply) === */
+/* body の不透明背景を無効化して、必ず変数グラデを適用 */
+html[data-theme], html[data-theme] body {
+  background: linear-gradient(45deg, var(--bg1), var(--bg2)) !important;
+  color: var(--ink) !important;
+}
+
+
+header {
+  background-color: #b9b9b97e;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+
+
+

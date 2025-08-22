@@ -26,22 +26,19 @@ class TweetsController < ApplicationController
     end
   end
 
- def following_posts
-   following_ids = current_user.followings.pluck(:id)
-   today_range = Time.zone.now.beginning_of_day..Time.zone.now.end_of_day
+  def following_posts
+    following_ids = current_user.followings.pluck(:id)
+    today_range = Time.zone.now.beginning_of_day..Time.zone.now.end_of_day
 
-   all_tweets = Tweet.includes(:user).where(user_id: following_ids, created_at: today_range).order(created_at: :desc)
+    @tweets = Tweet.includes(:user)
+                  .where(user_id: following_ids, created_at: today_range)
+                  .order(created_at: :desc)
 
-   # コメント直後なら全件、そうでなければ1件だけ
-   if session[:show_all_following_posts]
-     @tweets = all_tweets
-     session[:show_all_following_posts] = nil # 一度だけ表示
-   else
-     @tweets = all_tweets.limit(1)
-   end
+    first = @tweets.first
+    @unlock_all = first.present? && first.comments.where(user_id: current_user.id).exists?
 
-   @comment = Comment.new
- end
+    @comment = Comment.new
+  end
 
   private
 

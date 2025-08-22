@@ -1,0 +1,260 @@
+/* =========================================================
+    tweets/new : Diary New  — FULL REFRESH (CSSのみで派手に)
+   ========================================================= */
+.diary-new {
+  background-repeat: no-repeat;
+  background-position: right bottom; /* 位置調整：右下 */
+  background-size: 100px auto;       /* 大きさ調整 */
+  /* Palette */
+  --ink:#2e1a10; --muted:#6b5d52;
+  --brand:#ff8a00; --brand-2:#ffae17;
+  --paper:#fff8f0; --glass:rgba(255,255,255,.86);
+  --card-shadow: 0 22px 60px rgba(0,0,0,.14);
+  --r-lg:24px; --r-md:14px;
+
+  background:
+    radial-gradient(60% 50% at 50% 20%, rgb(255, 255, 255), rgba(255, 255, 255, 0)),
+    linear-gradient(45deg, #ffffff, #afadad4b);
+  background-attachment: fixed;
+
+  border-radius: 24px;
+  outline: 3px solid #824f04;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.12);
+
+  color:var(--ink);
+  position:relative;
+  min-height:100svh;
+  padding:clamp(20px,3vw,44px) 0 64px;
+}
+
+
+
+
+
+
+
+/* ===== ヒーローコピー ===== */
+.diary-new .page-title {
+  text-align:center;
+  font-weight:900;
+  font-size:clamp(24px,6vw,46px); /* 文字を大きめに */
+  letter-spacing:.05em; /* 間隔も広めで存在感UP */
+  margin:12px 0 24px;
+  color:#343333; /* ブランドカラーで目立たせる */
+  text-shadow: 0 3px 6px rgba(0,0,0,.25), 0 0 20px rgba(255,174,23,.7); 
+  /* ドロップシャドウ＋光彩 */
+  animation: ttl-bounce-in 1s cubic-bezier(.22,1.5,.5,1) both;
+}
+
+@keyframes ttl-bounce-in {
+  0%   { opacity:0; transform: scale(0.6) translateY(-30px) rotate(-10deg); }
+  60%  { opacity:1; transform: scale(1.2) translateY(10px) rotate(5deg); }
+  80%  { transform: scale(0.95) translateY(-4px) rotate(-2deg); }
+  100% { transform: scale(1) translateY(0) rotate(0); }
+}
+
+/* ===== ガラスカード ===== */
+.diary-new .diary-card {
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: var(--r-lg);
+  box-shadow: 0 20px 40px rgba(0,0,0,.16), inset 0 0 20px rgba(61, 122, 214, 0.573);
+  max-width: 1040px;
+  width: 92%;
+  margin: 0 auto;
+  padding: clamp(20px,2.6vw,32px);
+  transform: translateY(40px) scale(.94);
+  opacity: 0;
+  animation: card-float-in 1s cubic-bezier(.22,.9,.2,1) .2s forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 光沢エフェクト（カード内にスーッと光が走る） */
+.diary-new .diary-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.61), transparent);
+  transform: skewX(-20deg);
+  animation: shine 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0%   { left: -75%; }
+  50%  { left: 130%; }
+  100% { left: 130%; }
+}
+
+/* ===== アニメーション安定版 ===== */
+@keyframes card-float-in {
+  0%   { opacity: 0; transform: translateY(40px) scale(.94); }
+  60%  { opacity: 1; transform: translateY(-6px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }  /* ←これが肝 */
+}
+/* ヘッダー帯 */
+.diary-new .diary-card__head{
+  background: radial-gradient(#050505 1px, transparent 1px);
+  background-size: 20px 20px;
+  border-radius:var(--r-md); padding:14px 16px; margin-bottom:18px;
+}
+.diary-card__title{ text-align:center; color:#2a2100; display:flex; flex-direction:column; gap:4px; }
+.diary-card__title strong{ font-size:clamp(18px,2.6vw,22px); }
+.diary-card__title span{ color:var(--muted); font-size:14px; }
+
+/* ===== 2カラム ===== */
+.diary-new .diary-grid{
+  display:grid; grid-template-columns:1.1fr .9fr;
+  gap:clamp(16px,2vw,24px);
+}
+@media (max-width:900px){ .diary-new .diary-grid{ grid-template-columns:1fr; } }
+
+/* ===== 共通フォームブロック ===== */
+.diary-new .form-group{
+  background:#fffefb;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:var(--r-md);
+  padding:14px;
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+}
+.diary-new .form-group + .form-group{ margin-top:14px; }
+
+.diary-new .form-label{
+  display:inline-block; font-weight:800; color:#4b4038;
+  background:#fff2d6; border-radius:10px; padding:4px 10px; margin-bottom:8px;
+}
+
+/* ===== 入力要素 ===== */
+.diary-new .form-input{
+  width:91%; border:1px solid #e8ded2; border-radius:12px;
+  padding:12px 14px; font-size:16px; background:#fff; color:#3a2e1d;
+  outline:none; transition:border-color .2s, box-shadow .2s, transform .02s;
+}
+.diary-new .form-input:focus{
+  border-color:var(--brand-2);
+  box-shadow:0 0 0 5px rgba(255,174,23,.22);
+}
+.diary-new .title-input{ font-weight:900; letter-spacing:.01em; }
+
+/* 便箋テクスチャ（横罫＋インク感） */
+.diary-new .diary-input{
+  min-height:280px; resize:vertical;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(139,94,60,.08) 0 28px,
+      rgba(139,94,60,.18) 28px 29px
+    ),
+    var(--paper);
+  line-height:28px; caret-color:#8B5E3C; font-feature-settings:"palt" 1;
+}
+
+/* 日時 */
+.diary-new .time-select{ max-width:360px; }
+
+/* ===== アップロード（アルバム／ポラロイド） ===== */
+.diary-new .upload-drop{
+  display:grid; place-items:center; text-align:center;
+  border:2px dashed var(--brand-2); border-radius:var(--r-md);
+  padding:22px 16px; background:rgba(255,250,235,.85);
+  transition: box-shadow .2s, transform .12s;
+}
+.diary-new .upload-drop:focus-within{ box-shadow:0 0 0 6px rgba(255,174,23,.22); }
+.diary-new .upload-drop__hint{ color:var(--muted); font-size:14px; }
+.diary-new .upload-input{ margin-top:10px; }
+
+.diary-new .upload-previews{
+  display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; perspective:900px;
+}
+.diary-new .upload-thumb{
+  width:120px; aspect-ratio:4/3; background:#fff;
+  border:1px solid rgba(0,0,0,.06); border-radius:10px;
+  box-shadow:0 12px 28px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.06) inset;
+  padding:6px 6px 22px; /* 下広め＝ポラロイド感 */
+  transform: rotate(var(--tilt,-2deg)) translateZ(0);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.diary-new .upload-thumb:hover{
+  --tilt:0deg; transform: translateY(-2px) scale(1.02);
+  box-shadow:0 16px 36px rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.06) inset;
+}
+.diary-new .upload-thumb:nth-child(2n){ --tilt: 2.5deg; }
+.diary-new .upload-thumb:nth-child(3n){ --tilt:-3.5deg; }
+
+/* ===== アクション（軽いリップル風） ===== */
+.diary-new .diary-actions{
+  display:flex; gap:12px; justify-content:flex-end; align-items:center; margin-top:16px;
+}
+.diary-new .btn-primary,
+.diary-new .btn-ghost{
+  position:relative; overflow:hidden;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:12px 18px; border-radius:14px; font-weight:900;
+  text-decoration:none; line-height:1; border:1px solid rgba(0,0,0,.06);
+  box-shadow:0 2px 0 rgba(0,0,0,.12);
+  transition: transform .06s, box-shadow .25s, background-color .25s;
+  will-change: transform;
+}
+.diary-new .btn-primary{ background:var(--brand-2); color:#2a2100; }
+.diary-new .btn-ghost{ background:#fff; color:var(--ink); }
+.diary-new .btn-primary:hover,
+.diary-new .btn-ghost:hover{ transform: translateY(-1px); }
+.diary-new .btn-primary:active::after{
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(140px 140px at 50% 50%, rgba(255,255,255,.38), transparent 60%);
+}
+
+/* ===== フェード（JSなしでも見える→has-jsで上書き可能） ===== */
+.diary-new [data-reveal]{ opacity:1; transform:none; }
+.has-js .diary-new [data-reveal]{ opacity:0; transform: translateY(12px); transition: opacity .5s, transform .5s; }
+.has-js .diary-new .is-in{ opacity:1; transform:none; }
+
+/* ===== モバイル微調整 ===== */
+@media (max-width:480px){
+  .diary-new{ padding-top:14px; }
+  .diary-new .page-title{ margin-bottom:10px; }
+  .diary-new .upload-thumb{ width:100px; }
+}
+
+/* ===== モーション配慮 ===== */
+@media (prefers-reduced-motion: reduce){
+  .diary-new *{ animation:none !important; transition:none !important; }
+}
+
+
+
+
+
+
+
+.bg-pen {
+  position: fixed;
+  top: 3%;
+  left: 2%;
+  width: 45px;   /* 大きさは調整してね */
+  height: auto;
+  animation: spin 8s linear infinite;
+  z-index: 55;
+  pointer-events: none; /* クリック無効化 */
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+
+.bg-write {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 70vw;    /* 画面の9割を占める感じ */
+  height: auto;
+  transform: translate(-50%, -50%);
+  opacity: 0.8;   /* 薄めにして背景感を出す */
+  pointer-events: none;
+}

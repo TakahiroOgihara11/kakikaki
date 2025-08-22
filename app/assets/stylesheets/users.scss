@@ -3,279 +3,11 @@
 
 
 
-  /* ===== User Show (Design B safe build) ===== */
-
-/* 画面共通の最大幅。Sassで%とpxを混在計算しないため
-   min() は使わず、max-width + width で再現 */
-.user-show-page {
-  border-radius: 70px; box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* 影の位置、ぼかし具合、色 */
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* 影の位置、ぼかし具合、色 */
-  outline: 3px solid #824f04;
-  --brand: #ffdd00;
-  --ink: #2e1a10;
-  --muted: #6b5d52;
-  --surface: #ffffff;
-  --glass: rgba(138, 62, 0, 0.55);
-
-  color: var(--ink);
-
-  background-color: #ffffff !important; /* 背景画像を後で重ねるならここに !important でOK */
-  background: url('hello.svg') no-repeat center center;
-  background-size: cover;
-  background-size: 60% auto; 
-  background-attachment: fixed;
-
-}
-
-/* 中央寄せのラッパー（min()の代替） */
-.user-show-page .content {
-  max-width: 1040px;
-  width: 92%;
-  margin: 0 auto;
-  padding: 32px 0 56px;
-
-}
-
-/* ヒーローブロック（上部の挨拶と状態） */
-.user-hero {
-  position: relative;
-  border-radius: 16px;
-  padding: 28px 24px;
-  background: var(--glass);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  overflow: hidden;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center; /* 水平方向中央 */
-  align-items: center;     /* 垂直方向中央 */
-  gap: 16px; /* 横の余白 */
-  flex-wrap: wrap; /* スマホ対応で折り返す */
-}
-
-.user-hero__top {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap; /* スマホ対応 */
-  text-align: center;
-}
-
-/* 背景イラストをあとで入れるならここに */
-.user-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-position: right -40px center;
-  background-repeat: no-repeat;
-  background-size: 420px auto;
-  opacity: .18;
-  pointer-events: none;
-  /* 例）background-image: image-url("hero_bg.svg"); */
-}
-
-.user-hero__heading {
-  margin: 0;
-  font-weight: 800;
-  line-height: 1.2;
-  /* clamp は一部Sassで誤検知されることがあるので文字列化 */
-  font-size: unquote("clamp(20px, 2.6vw, 28px)");
-}
-
-.user-hero__sub {
-  margin: 0;
-  color: var(--muted);
-
-  display: flex;
-  font-family: 'Rounded Mplus 1c', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #2E2E2E;
-  background-color: #FFF8F0;
-  padding: 10px 16px;
-  border-radius: 16px;
-  display: inline-block;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.user-hero__heading,
-.user-hero__sub {
-  margin: 0;
-  text-align: center;
-}
-// チェックアイコン
-.check-icon {
-  width: 40px;
-  height: auto;
-  vertical-align: middle;
-  margin-left: 4px;
-}
 
 
-/* アクション行 */
-.user-hero__actions {
-  justify-content: center; /* 水平方向中央 */
-  align-items: center;     /* 垂直方向中央 */
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-}
 
-/* ボタン風リンク（共通） */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 700;
-  border: 1px solid rgba(0,0,0,0.06);
-  transition: transform .04s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
-  box-shadow: 0 2px 0 rgba(0,0,0,0.12);
-  line-height: 1;
-}
 
-/* 主要アクション（黄色軸） */
-.btn--primary {
-  background: var(--brand);
-  color: #2a2100;
-}
-.btn--primary:hover { transform: translateY(-1px); }
 
-/* セカンダリ（白ガラス） */
-.btn--ghost {
-  background: rgba(255,255,255,0.8);
-  color: var(--ink);
-}
-.btn--ghost:hover { transform: translateY(-1px); }
-
-/* Disabled 表現（既存の .btn-disabled を補強） */
-.btn.btn--disabled,
-.btn-disabled {
-  pointer-events: none;
-  opacity: .45;
-  cursor: not-allowed;
-  background: #e9e5dc;
-  color: #857b70;
-  border-color: rgba(0,0,0,0.04);
-  box-shadow: none;
-}
-
-/* メイン2カラム：左（プロフィール/直近）右（リスト） */
-.user-main {
-  display: grid;
-  grid-template-columns: 1.05fr 1.3fr;
-  gap: 24px;
-  margin-top: 22px;
-}
-@media (max-width: 900px) {
-  .user-main { grid-template-columns: 1fr; }
-}
-
-/* カード共通 */
-.card {
-  background: var(--surface);
-  border: 1px solid rgba(0,0,0,0.05);
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-}
-
-/* プロフィールカード */
-.profile-card__header {
-  display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 14px;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.profile-card__avatar {
-  width: 96px; height: 96px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #fff;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
-.profile-card__name { margin: 0 0 2px; font-weight: 800; }
-.profile-card__email { margin: 0; color: var(--muted); font-size: 14px; }
-.profile-card__bio { 
-  margin: 10px 0 0; color: #542809; 
-  max-width: 100%;  /* 親要素に合わせる */
-  word-wrap: break-word;  /* 長い単語が超えた場合に改行 */
-  word-break: break-word; /* 単語を途中で改行 */
-  white-space: normal; /* 改行を有効にする */
-  line-height: 1.6; /* 行間の調整 */
-}
-
-/* 最近の投稿 */
-.recent-list { display: grid; gap: 12px; margin-top: 10px; }
-.recent-item {
-  padding: 10px 12px;
-  border: 1px dashed rgba(0,0,0,0.08);
-  border-radius: 10px;
-  background: #fffdf6;
-}
-.recent-item__title { margin: 0 0 4px; font-weight: 700; }
-.recent-item__meta { color: var(--muted); font-size: 12px; }
-.recent-item__img {
-  display: block;
-  width: 100%; max-height: 220px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-top: 8px;
-}
-
-/* 右側：自分の投稿一覧（タイムライン） */
-.timeline { display: grid; gap: 12px; }
-.post {
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.05);
-  border-radius: 12px;
-  padding: 14px;
-}
-.post__title { margin: 0 0 6px; font-weight: 800; }
-.post__meta { margin: 0 0 10px; color: var(--muted); font-size: 12px; }
-.post__img {
-  display: block;
-  width: 100%; max-height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-  cursor: zoom-in;
-}
-
-/* 画像モーダル（既存の構造に合わせて） */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0,0,0,0.82);
-  align-items: center;
-  justify-content: center;
-}
-.modal.open { display: flex; }
-.modal img { max-width: 92vw; max-height: 92vh; border-radius: 10px; }
-
-/* 小さな見出し */
-.section-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 10px;
-  font-weight: 800;
-  font-size: 16px;
-}
-.section-title::before {
-  content: "";
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--brand);
-  box-shadow: 0 0 0 6px rgba(255,221,0,0.25);
-}
 
 
 
@@ -285,6 +17,9 @@
 
 /* 全体の背景 */
 
+.users-index{
+
+}
 
 /* ユーザー一覧のタイトル */
 .users-index__title {
@@ -294,7 +29,10 @@
   margin: 20px 0;
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); /* 文字に影をつけて目立たせる */
+  
+  
 }
+
 
 /* 検索フォーム */
 .users-index__search {
@@ -342,16 +80,33 @@
 /* ユーザーリスト */
 .users-index__list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3列表示 */
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-top: 20px;
+  border-radius: 12px;
+  
+
+  animation: stars 8s linear infinite;
+
+  background-image: url('new_friends.png');
+  background-attachment: fixed;
+}
+@keyframes stars {
+  0% { background-position: -200px -200px; }
+  100% { background-position: 200px 200px; }
 }
 
 .user-card {
-  background: white;
+  background: rgba(235, 235, 235, 0.58);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, .25);
+  box-shadow: 0 20px 40px rgba(212, 34, 34, 0.16), inset 0 0 20px rgba(6, 99, 238, 0.573);
+  
+
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(235, 35, 35, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -378,7 +133,7 @@
   font-size: 1.5rem;
   font-weight: 800;
   margin-bottom: 10px;
-  color: #ff6f2c;
+  color: #474747;
 }
 
 .user-card__profile {
@@ -447,4 +202,28 @@
   .users-index__list {
     grid-template-columns: 1fr; /* 1列表示 */
   }
+}
+
+.glass-image {
+  position: fixed;
+  top: 3%;
+  left: 2%;
+  width: 45px;   /* 大きさは調整してね */
+  height: auto;
+  animation: spin 8s linear infinite;
+  z-index: 55;
+  pointer-events: none; /* クリック無効化 */
+}
+
+
+
+.new-friends-image {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 70vw;    /* 画面の9割を占める感じ */
+  height: auto;
+  transform: translate(-50%, -50%);
+  opacity: 0.8;   /* 薄めにして背景感を出す */
+  pointer-events: none;
 }

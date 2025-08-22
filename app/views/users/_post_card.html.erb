@@ -1,0 +1,88 @@
+<article class="us-post" data-reveal>
+  <header class="us-author">
+    <div class="us-author__avatar">
+      <%= image_tag(user.profile_image.attached? ? user.profile_image : "default_icon.png") %>
+    </div>
+    <div class="us-author__meta">
+      <div class="us-author__name"><%= user.name %></div>
+      <div class="us-author__sub">
+        <span class="us-badge">投稿</span>
+        <% if t.image.attached? %><span class="us-badge us-badge--photo">📷 写真あり</span><% end %>
+      </div>
+    </div>
+    <time class="us-time"><%= (t.respond_to?(:time) && t.time.present?) ? t.time.strftime('%Y-%m-%d %H:%M') : t.created_at.strftime('%Y-%m-%d %H:%M') %></time>
+  </header>
+
+  <div class="us-body">
+    <h3 class="us-title"><%= t.name %></h3>
+    <div class="us-text"><%= simple_format(t.diary) %></div>
+    <% if t.image.attached? %>
+      <figure class="us-image">
+        <%= image_tag t.image, class:"clickable-image", alt: t.name, data:{ full_image_url: url_for(t.image) } %>
+      </figure>
+    <% end %>
+  </div>
+
+  <div class="us-actions">
+    <div class="like-row">
+      <% if current_user.already_liked?(t) %>
+        <%= button_to "💗 いいね取り消し (#{t.likes.count})",
+                      tweet_like_path(t, current_user.likes.find_by(tweet_id: t.id)),
+                      method: :delete,
+                      class: "btn-like btn-like--on",
+                      data: { ripple: true } %>
+      <% else %>
+        <%= button_to "♡ いいね (#{t.likes.count})",
+                      tweet_likes_path(t),
+                      method: :post,
+                      class: "btn-like",
+                      data: { ripple: true } %>
+      <% end %>
+    </div>
+
+    <% c = t.comments.size %>
+    <button type="button"
+            class="us-comments-toggle"
+            data-target="us-comments-<%= t.id %>"
+            aria-expanded="false"
+            aria-controls="us-comments-<%= t.id %>">
+      コメントを表示 <span class="us-count"><%= c %></span>
+    </button>
+  </div>
+
+  <section id="us-comments-<%= t.id %>" class="us-comments is-collapsed" aria-hidden="true">
+    <div class="us-comments__wrap">
+      <h4 class="us-comments__ttl">コメント</h4>
+      <% if t.comments.any? %>
+        <ul class="us-comments__list">
+          <% t.comments.each do |comment| %>
+            <li class="us-comment" data-reveal>
+              <div class="us-comment__head">
+                <span class="us-comment__name"><%= comment.user.name %></span>
+              </div>
+              <div class="us-comment__body"><%= comment.content %></div>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="us-comments__empty">まだコメントはありません。</p>
+      <% end %>
+    </div>
+
+    <% if user_signed_in? %>
+      <%= form_with(model: [t, Comment.new], local: true, html: { class: "us-form" }) do |f| %>
+        <div class="us-form__row">
+          <div class="us-prompts" aria-label="コメントのヒント">
+            <% ["今日の気づき", "ここが好き", "明日の一歩"].each do |p| %>
+              <button type="button" class="us-chip" data-insert="<%= p %>">#<%= p %></button>
+            <% end %>
+          </div>
+          <%= f.text_area :content, placeholder: "ひとこと書いてみよう…", class: "us-input", rows: 3 %>
+        </div>
+        <div class="us-form__actions">
+          <%= f.submit "コメントする", class: "us-btn us-btn--primary", data: { ripple: true } %>
+        </div>
+      <% end %>
+    <% end %>
+  </section>
+</article>
