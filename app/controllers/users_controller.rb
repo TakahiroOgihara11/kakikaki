@@ -5,10 +5,15 @@ class UsersController < ApplicationController
  end
 
   def index
-    @users = User.where.not(id: current_user.id) # 自分以外を表示
     if params[:search].present?
-      search = params[:search]
-      @users = @users.where("name LIKE ?", "%#{search}%")
+      @users = User.where.not(id: current_user.id)
+                   .where("name LIKE ?", "%#{params[:search]}%")
+      @search_mode = true
+    else
+      @users = User.where.not(id: current_user.id)
+                   .order(created_at: :desc)
+                   .limit(5)
+      @search_mode = false
     end
   end
 

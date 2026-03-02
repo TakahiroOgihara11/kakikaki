@@ -39,25 +39,23 @@
 .index .lp-hero-card {
   background: var(--glass);
   backdrop-filter: blur(8px);
-  border:1px solid rgba(0,0,0,.06);
+  border: 1px solid rgba(0,0,0,.06);
   border-radius: 20px;
   padding: clamp(16px, 4vw, 36px);
   box-shadow: 0 10px 30px rgba(0,0,0,.08);
   max-width: 880px;
-  width: 92vw;
-
-  /* ふわふわアニメーション追加 */
+  width: 100%;
+  box-sizing: border-box; /* ← これが重要！paddingを幅に含める */
+  overflow: hidden;        /* ← はみ出た要素を隠す */
+  word-break: break-word;  /* ← 長い文字列が折り返す */
 }
 
-
-
-
-.index .lp-ttl{
+.index .lp-ttl {
   text-align: center;
   margin: 0 0 .6rem;
   line-height: 1.2;
   font-weight: 900;
-  font-size: clamp(28px, 5.4vw, 56px);
+  font-size: clamp(20px, 5.4vw, 56px); /* ← 最小値を28px→20pxに縮小 */
 }
 
 .index .lp-lead{

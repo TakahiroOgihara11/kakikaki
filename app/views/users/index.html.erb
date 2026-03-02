@@ -1,8 +1,13 @@
-
 <div class="users-index">
   <hr class="page-line">
-  <h1 class="users-index__title">ユーザー一覧</h1>
-    <img src="<%= asset_path('glass.png') %>" alt="虫眼鏡" class="glass-image">
+
+  <% if @search_mode %>
+    <h1 class="users-index__title">検索結果</h1>
+  <% else %>
+    <h1 class="users-index__title">ユーザー検索</h1>
+  <% end %>
+
+  <img src="<%= asset_path('glass.png') %>" alt="虫眼鏡" class="glass-image">
 
   <div class="users-index__search">
     <%= form_tag(users_path, method: :get, class: "users-index__search-form") do %>
@@ -12,38 +17,46 @@
   </div>
   <hr class="styled-line">
 
-
+  <% unless @search_mode %>
+    <p style="text-align:center; color:white; font-weight:bold; margin-bottom:12px;">最近登録したユーザー</p>
+  <% end %>
+  
   <section class="users-index__list">
-
-    <% @users.each do |user| %>
-      <div class="user-card">
-        <div class="user-card__image">
-          <%= image_tag(user.profile_image.attached? ? user.profile_image : "default_icon.png", class: "user-card__avatar") %>
-        </div>
-        <div class="user-card__main">
-          <p class="user-card__name"><strong><%= user.name %></strong></p>
-        </div>
-
-        <% unless current_user == user %>
-          <div class="user-card__actions">
-            <% if current_user.following?(user) %>
-              <%= form_for(current_user.relationships.find_by(follow_id: user.id), html: { method: :delete, class: "follow-form follow-form--unfollow" }) do |f| %>
-                <%= hidden_field_tag :follow_id, user.id %>
-                <%= f.submit 'フォロー解除', class: 'btn btn--danger btn--block' %>
-              <% end %>
-            <% else %>
-              <%= form_for(current_user.relationships.build, html: { class: "follow-form follow-form--follow" }) do |f| %>
-                <%= hidden_field_tag :follow_id, user.id %>
-                <%= f.submit 'フォロー', class: 'btn btn--primary btn--block' %>
-              <% end %>
-            <% end %>
+    <% if @users.empty? %>
+      <p style="text-align:center; color:white; font-weight:bold;">
+        「<%= params[:search] %>」に一致するユーザーは見つかりませんでした。
+      </p>
+    <% else %>
+      <% @users.each do |user| %>
+        <div class="user-card">
+          <div class="user-card__image">
+            <%= image_tag(user.profile_image.attached? ? user.profile_image : "default_icon.png", class: "user-card__avatar") %>
           </div>
-        <% end %>
+          <div class="user-card__main">
+            <p class="user-card__name"><strong><%= user.name %></strong></p>
+          </div>
 
-        <div class="user-card__link">
-          <%= link_to 'プロフィールを見る', user_path(user), class: "user-card__profile-link" %>
+          <% unless current_user == user %>
+            <div class="user-card__actions">
+              <% if current_user.following?(user) %>
+                <%= form_for(current_user.relationships.find_by(follow_id: user.id), html: { method: :delete, class: "follow-form follow-form--unfollow" }) do |f| %>
+                  <%= hidden_field_tag :follow_id, user.id %>
+                  <%= f.submit 'フォロー解除', class: 'btn btn--danger btn--block' %>
+                <% end %>
+              <% else %>
+                <%= form_for(current_user.relationships.build, html: { class: "follow-form follow-form--follow" }) do |f| %>
+                  <%= hidden_field_tag :follow_id, user.id %>
+                  <%= f.submit 'フォロー', class: 'btn btn--primary btn--block' %>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="user-card__link">
+            <%= link_to 'プロフィールを見る', user_path(user), class: "user-card__profile-link" %>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </section>
   <hr class="page-line">

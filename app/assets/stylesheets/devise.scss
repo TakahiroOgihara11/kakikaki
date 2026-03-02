@@ -1,0 +1,226 @@
+/* =====================================================
+   Devise Pages（登録・ログイン・プロフィール編集）
+   ===================================================== */
+
+:root {
+  --brand: #ff8a00;
+  --brand-light: #ffb347;
+  --brand-ink: #2a2100;
+  --ink: #2e1a10;
+  --muted: #6b5d52;
+  --glass: rgba(255, 255, 255, 0.82);
+  --radius: 20px;
+}
+
+/* ページ全体 */
+.devise-page {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* white → transparent に変更 */
+  padding: 40px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 装飾円も消す */
+.devise-page::before,
+.devise-page::after {
+  display: none;
+}
+.devise-page::after {
+  content: '';
+  position: fixed;
+  bottom: -150px;
+  left: -150px;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,138,0,.12), transparent 70%);
+  pointer-events: none;
+}
+
+/* カード */
+.devise-card {
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, .07);
+  border-radius: var(--radius);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, .08),
+    0 4px 16px rgba(255, 138, 0, .06);
+  padding: clamp(28px, 6vw, 48px);
+  width: 100%;
+  max-width: 440px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  animation: devise-in .5s ease both;
+}
+
+@keyframes devise-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* タイトル */
+.devise-card__title {
+  font-size: clamp(22px, 4vw, 28px);
+  font-weight: 900;
+  color: var(--ink);
+  margin: 0 0 24px;
+  text-align: center;
+  letter-spacing: -.02em;
+}
+
+.devise-card__title span {
+  color: var(--brand);
+}
+
+/* フィールド */
+.devise-field {
+  margin-bottom: 18px;
+}
+
+.devise-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  margin-bottom: 6px;
+  letter-spacing: .04em;
+}
+
+.devise-field input[type="text"],
+.devise-field input[type="email"],
+.devise-field input[type="password"],
+.devise-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(0, 0, 0, .1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .9);
+  font-size: 15px;
+  color: var(--ink);
+  box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+
+.devise-field input:focus,
+.devise-field textarea:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px rgba(255, 138, 0, .15);
+}
+
+.devise-field em {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: normal;
+}
+
+/* 送信ボタン */
+.devise-actions {
+  margin-top: 24px;
+}
+
+.devise-actions input[type="submit"],
+.devise-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--brand);
+  color: var(--brand-ink);
+  font-size: 16px;
+  font-weight: 900;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(180, 90, 0, .3);
+  transition: transform .05s, box-shadow .15s, background-color .2s;
+  letter-spacing: .02em;
+}
+
+.devise-actions input[type="submit"]:hover,
+.devise-btn:hover {
+  background: var(--brand-light);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 0 rgba(180, 90, 0, .25);
+}
+
+.devise-actions input[type="submit"]:active,
+.devise-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(180, 90, 0, .3);
+}
+
+/* リンクエリア（ログインへ・登録へ） */
+.devise-links {
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.devise-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .2s;
+}
+
+.devise-links a:hover {
+  color: var(--brand);
+}
+
+/* エラーメッセージ */
+.devise-errors {
+  background: rgba(255, 80, 80, .08);
+  border: 1px solid rgba(255, 80, 80, .2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: #c0392b;
+}
+
+.devise-errors ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+/* チェックボックス（Remember me） */
+.devise-field--check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.devise-field--check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand);
+}
+
+.devise-field--check label {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ファイルアップロード */
+.devise-field input[type="file"] {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* スマホ対応 */
+@media (max-width: 480px) {
+  .devise-card {
+    border-radius: 16px;
+    padding: 24px 20px;
+  }
+}
